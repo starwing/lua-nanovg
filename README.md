@@ -17,18 +17,16 @@ Usage
 To use lua-nanovg, you should first require it, after that, you will
 get a function to create context for drawing:
 
-```
+```lua
 local ctx = require 'nvg' ()
 ```
 
 You can pass some arguments to this function, to specify the atlas
 size and/or edge AA (anti-alias) flags:
 
-```
+```lua
 local ctx = require 'nvg' (256, 256, "AA") -- default
-
 local ctx = require 'nvg' (256, 256) -- no edge anti-alias
-
 local ctx = require 'nvg' "AA" -- use edge anti-alias, and default atlas size.
 ```
 
@@ -39,12 +37,13 @@ API
 ---
 
 sub module:
-    - color
-    - image
-    - gradient
-    - font
+  - color
+  - image
+  - gradient
+  - font
 
 
+```lua
 ctx:beginFrame()
 ctx:endFrame()
 ctx:color("name")
@@ -114,7 +113,4 @@ ctx.textAlign =
 ctx.fontBlur = number;
 ctx:text()
 ctx:measureText()
-
-
-
-
+```
