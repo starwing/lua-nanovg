@@ -7,6 +7,7 @@
 *.sln.docstates
 old/*
 *.dll
+*.o
 
 # Build results
 

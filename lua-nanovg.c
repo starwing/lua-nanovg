@@ -1291,5 +1291,5 @@ LBLIB_API int luaopen_nvg_color(lua_State *L) {
 }
 
 /* cc: cc='clang' flags+='-s -O3 -shared'
- * cc: libs+='-L. -lgl2 -lnanovg -lopengl32 -llua53'
- * cc: output='nvg.dll' */
+ * cc: libs+='-lopengl32 -llua53'
+ * cc: input+='gl_2_0_core.o nanovg.o nanovg.def' output='nvg.dll' */

@@ -12,9 +12,9 @@ local icons = {
 }
 
 local function loadData(ctx)
-   ctx:font("sans-bold",  "example/Roboto-Bold.ttf")
-   ctx:font("sans",       "example/Roboto-Regular.ttf")
-   ctx:font("icons",      "example/entypo.ttf")
+   ctx:font("sans-bold",  "nanovg/example/Roboto-Bold.ttf")
+   ctx:font("sans",       "nanovg/example/Roboto-Regular.ttf")
+   ctx:font("icons",      "nanovg/example/entypo.ttf")
 end
 
 local function drawWindow(ctx, title, x, y, w, h)
