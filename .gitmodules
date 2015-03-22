@@ -1,3 +1,6 @@
 [submodule "nanovg"]
 	path = nanovg
 	url = https://github.com/memononen/nanovg
+[submodule "glfw"]
+	path = glfw
+	url = https://github.com/glfw/glfw

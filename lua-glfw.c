@@ -433,5 +433,5 @@ static int set_hint(lua_State *L, int hint) {
 }
 
 /* cc: flags+='-s -O2 -mdll -DLUA_BUILD_AS_DLL'
- * cc: libs+='-llua53 -lglfw3 -lopengl32 -lgdi32'
+ * cc: libs+='libglfw3.a -llua53 -lopengl32 -lgdi32'
  * cc: output='glfw.dll' */
