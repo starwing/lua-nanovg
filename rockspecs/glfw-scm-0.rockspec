@@ -23,6 +23,9 @@ build = {
                   "_GLFW_WGL",
                   "_GLFW_BUILD_DLL",
                },
+               incdirs = {
+                  "glfw/include",
+               },
                libraries = {
                   "gdi32", "winmm", "opengl32"
                },
