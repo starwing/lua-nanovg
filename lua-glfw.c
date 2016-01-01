@@ -1,9 +1,4 @@
-#ifdef __GNUC__
-# define LB_API static __attribute__((unused))
-#else
-# define LB_API static
-#endif
-#define LBIND_IMPLEMENTATION
+#define LBIND_STATIC_API
 #include "lbind.h"
 
 
@@ -62,6 +57,12 @@ static int Lhint(lua_State *L) {
     return lbind_typeerror(L, 1, "hint name (string/number)");
 }
 
+static int Lswapinterval(lua_State *L) {
+    int interval = (int)luaL_checkinteger(L, 1);
+    glfwSwapInterval(interval);
+    return 0;
+}
+
 static void error_cb(int err, const char *msg) {
     if (globalL != NULL) {
         lua_State *L = globalL;
@@ -100,6 +101,7 @@ LBLIB_API int luaopen_glfw(lua_State *L) {
         ENTRY(wait),
         ENTRY(time),
         ENTRY(hint),
+        ENTRY(swapinterval),
 #undef  ENTRY
         { NULL, NULL }
     };
@@ -435,3 +437,4 @@ static int set_hint(lua_State *L, int hint) {
 /* cc: flags+='-s -O2 -mdll -DLUA_BUILD_AS_DLL'
  * cc: libs+='-lglfw3 -llua53 -lopengl32 -lgdi32'
  * cc: output='glfw.dll' */
+
