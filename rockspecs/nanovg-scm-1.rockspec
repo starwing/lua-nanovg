@@ -1,5 +1,5 @@
 package = "nanovg"
-version = "scm-0"
+version = "scm-1"
 source = {
    url = "https://github.com/starwing/lua-nanovg.git",
 }
@@ -27,7 +27,6 @@ build = {
          sources = {
             "lua-nanovg.c",
             "nanovg/src/nanovg.c",
-            "gl_2_0_core.c",
          },
       },
    },
