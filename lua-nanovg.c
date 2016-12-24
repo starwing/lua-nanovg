@@ -8,9 +8,21 @@
 
 
 #define LOADGL_STATIC_API
-#include "gles2.h"
+#ifdef __APPLE__
+#include "gl_2_0_core.h"
 static int opengl_loaded = 0;
 
+#define NANOVG_GL2_IMPLEMENTATION
+#include "nanovg/src/nanovg.h"
+#include "nanovg/src/nanovg_gl.h"
+#undef NANOVG_GL2_IMPLEMENTATION
+
+#define CONTEXT_NEW    nvgCreateGL2
+#define CONTEXT_DELETE nvgDeleteGL2
+
+#else
+#include "gles2.h"
+static int opengl_loaded = 0;
 
 #define NANOVG_GLES2_IMPLEMENTATION
 #include "nanovg/src/nanovg.h"
@@ -19,6 +31,7 @@ static int opengl_loaded = 0;
 
 #define CONTEXT_NEW    nvgCreateGLES2
 #define CONTEXT_DELETE nvgDeleteGLES2
+#endif
 
 LBIND_TYPE(lbT_Context, "NanoVG.Context");
 LBIND_TYPE(lbT_Image,   "NanoVG.Image");
@@ -140,7 +153,7 @@ static int LbeginFrame(lua_State *L) {
     GLsizei w = (GLsizei)luaL_checkinteger(L, 2);
     GLsizei h = (GLsizei)luaL_checkinteger(L, 3);
     float ratio = (float)luaL_optnumber(L, 4, 1.0);
-    glViewport(0, 0, w, h);
+    glViewport(0, 0, w*ratio, h*ratio);
     nvgBeginFrame(ctx, w, h, ratio);
     lbind_returnself(L);
 }
@@ -1291,6 +1304,8 @@ LBLIB_API int luaopen_nvg_color(lua_State *L) {
     return 1;
 }
 
-/* cc: flags+='-s -O3 -shared'
- * cc: libs+='-lopengl32 -llua53'
- * cc: input+='nanovg.o nanovg.def' output='nvg.dll' */
+/* win32cc: flags+='-s -O3 -shared' libs+='-lopengl32 -llua53'
+ * win32cc: output+='nanovg.def' output='nvg.dll'
+ * maccc: flags+='-O3 -bundle -undefined dynamic_lookup' output='nvg.so'
+ * cc: input+='nanovg.o' */
+

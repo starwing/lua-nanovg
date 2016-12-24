@@ -775,33 +775,14 @@ GL_NS_END
 
 #ifdef __APPLE__
 
-#include <mach-o/dyld.h>
+#include <dlfcn.h>
 
-static void *loadgl_GetProcAddress (const GLubyte *name) {
-  static const struct mach_header *image = NULL;
-  NSSymbol symbol;
-  char *symbol_name;
-
-  if (image == NULL) {
-    image = NSAddImage("/System/Library/Frameworks/OpenGL.framework"
-                       "/Versions/Current/OpenGL", NSADDIMAGE_OPTION_RETURN_ON_ERROR);
-  }
-
-  symbol_name = malloc(strlen((const char *)name) + 2);
-  if (!symbol_name) return NULL;
-
-  strcpy(symbol_name+1, (const char*)name);
-  symbol_name[0] = '_';
-  symbol = NULL;
-
-  /* if (NSIsSymbolNameDefined(symbolName))
-	 symbol = NSLookupAndBindSymbol(symbolName); */
-  symbol = !image ? NULL : NSLookupSymbolInImage(image,
-      symbol_name,
-      NSLOOKUPSYMBOLINIMAGE_OPTION_BIND |
-      NSLOOKUPSYMBOLINIMAGE_OPTION_RETURN_ON_ERROR);
-  free(symbol_name);
-  return symbol ? NSAddressOfSymbol(symbol) : NULL;
+static void *loadgl_GetProcAddress (const char *name) {
+    static void* image = NULL;
+    if (image == NULL)
+        image = dlopen("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL",
+                RTLD_LAZY);
+    return image ? dlsym(image, name) : NULL;
 }
 
 #elif defined(__sgi) || defined(__sun)
@@ -809,7 +790,7 @@ static void *loadgl_GetProcAddress (const GLubyte *name) {
 #include <dlfcn.h>
 #include <stdio.h>
 
-static void* loadgl_GetProcAddress (const GLubyte* name) {
+static void* loadgl_GetProcAddress (const char* name) {
   static void* h = NULL;
   static void* gpa;
 
@@ -820,9 +801,9 @@ static void* loadgl_GetProcAddress (const GLubyte* name) {
   }
 
   if (gpa != NULL)
-    return ((void*(*)(const GLubyte*))gpa)(name);
+    return ((void*(*)(const GLubyte*))gpa)((const GLubyte*)name);
   else
-    return dlsym(h, (const char*)name);
+    return dlsym(h, name);
 }
 
 #elif defined(__WIN32)

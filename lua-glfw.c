@@ -434,7 +434,8 @@ static int set_hint(lua_State *L, int hint) {
     return 0;
 }
 
-/* cc: flags+='-s -O2 -mdll -DLUA_BUILD_AS_DLL'
- * cc: libs+='-lglfw3 -llua53 -lopengl32 -lgdi32'
- * cc: output='glfw.dll' */
+/* cc: flags+='-Iglfw/include'
+ * win32cc: flags+='-s -O2 -mdll -DLUA_BUILD_AS_DLL'
+ * win32cc: libs+='-lglfw3 -llua53 -lopengl32 -lgdi32' output='glfw.dll'
+ * maccc: flags+='-s -O2 -bundle -undefined dynamic_lookup' output="glfw.so" */
 

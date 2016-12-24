@@ -545,7 +545,7 @@ local function renderDemo(ctx, mx, my, width, height, t, blowup)
 end
 
 glfw.hint("context_version", 2, 0);
-local w = glfw.window(1000, 600, "Demo")
+local w = assert(glfw.window(1000, 600, "Demo"))
 w:makecurrent()
 
 local canvas = nvg.new "antialias"

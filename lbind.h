@@ -441,11 +441,11 @@ static void luaL_traceback(lua_State *L, lua_State *L1, const char *msg, int lev
 #define LBIND_UDBOX   0xC5E7DB07
 
 static int lbB_retrieve(lua_State *L, unsigned id) {
-  if (lua53_rawgetp(L, LUA_REGISTRYINDEX, (void*)id) == LUA_TNIL) {
+  if (lua53_rawgetp(L, LUA_REGISTRYINDEX, (void*)(ptrdiff_t)id) == LUA_TNIL) {
     lua_pop(L, 1);
     lua_newtable(L);
     lua_pushvalue(L, -1);
-    lua_rawsetp(L, LUA_REGISTRYINDEX, (void*)id);
+    lua_rawsetp(L, LUA_REGISTRYINDEX, (void*)(ptrdiff_t)id);
     return 1;
   }
   return 0;
@@ -1662,7 +1662,10 @@ LBLIB_API int luaopen_lbind(lua_State *L) {
 LB_NS_END
 
 #endif /* LBIND_IMPLEMENTATION */
+
 /* vim: set sw=2: */
-/* cc: lua='lua53' flags+='-s -O2 -Wall -std=c99 -pedantic -mdll -Id:/$lua/include'
- * cc: flags+='-DLBIND_IMPLEMENTATION -xc' output='lbind.dll'
- * cc: run='$lua tt.lua' libs+='-L D:/$lua -l$lua' */
+/* cc: lua='lua53' run='$lua tt.lua'
+ * win32cc: flags+='-mdll -Id:/$lua/include' output='lbind.dll' libs+='-L D:/$lua -l$lua' 
+ * maccc: flags+='-bundle -undefined dynamic_lookup' output='lbind.so'
+ * cc: flags+='-s -O2 -Wall -std=c99 -pedantic -DLBIND_IMPLEMENTATION -xc' */
+
