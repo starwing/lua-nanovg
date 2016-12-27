@@ -6,6 +6,24 @@
 #include <lauxlib.h>
 
 
+#if LUA_VERSION_NUM >= 503
+# define lua53_getuservalue lua_getuservalue
+# define lua53_gettable     lua_gettable
+# define lua53_getfield     lua_getfield
+# define lua53_rawget       lua_rawget
+# define lua53_rawgeti      lua_rawgeti
+# define lua53_rawgetp      lua_rawgetp
+# define lua53_rotate       lua_rotate
+#else
+LUA_API int lua53_getuservalue(lua_State *L, int idx);
+LUA_API int lua53_gettable(lua_State *L, int idx);
+LUA_API int lua53_getfield(lua_State *L, int idx, const char *field);
+LUA_API int lua53_rawget(lua_State *L, int idx);
+LUA_API int lua53_rawgeti(lua_State *L, int idx, lua_Integer n);
+LUA_API int lua53_rawgetp(lua_State *L, int idx, const void *p);
+LUA_API void lua53_rotate(lua_State *L, int idx, int n);
+#endif
+
 #if LUA_VERSION_NUM < 502
 # define LUA_OK                        0
 # define lua_getuservalue              lua_getfenv
@@ -302,27 +320,21 @@ LB_NS_END
 LB_NS_BEGIN
 
 
-/* lua 5.3 compatible accessor functions */
-#if LUA_VERSION_NUM >= 503
-# define lua53_getuservalue lua_getuservalue
-# define lua53_gettable     lua_gettable
-# define lua53_getfield     lua_getfield
-# define lua53_rawget       lua_rawget
-# define lua53_rawgetp      lua_rawgetp
-# define lua53_rotate       lua_rotate
-#else
-static int lua53_getuservalue(lua_State *L, int idx)
+#if LUA_VERSION_NUM < 503
+LUA_API int lua53_getuservalue(lua_State *L, int idx)
 { lua_getuservalue(L, idx); return lua_type(L, -1); }
-static int lua53_gettable(lua_State *L, int idx)
+LUA_API int lua53_gettable(lua_State *L, int idx)
 { lua_gettable(L, idx); return lua_type(L, -1); }
-static int lua53_getfield(lua_State *L, int idx, const char *field)
+LUA_API int lua53_getfield(lua_State *L, int idx, const char *field)
 { lua_getfield(L, idx, field); return lua_type(L, -1); }
-static int lua53_rawget(lua_State *L, int idx)
+LUA_API int lua53_rawget(lua_State *L, int idx)
 { lua_rawget(L, idx); return lua_type(L, -1); }
-static int lua53_rawgetp(lua_State *L, int idx, const void *p)
+LUA_API int lua53_rawgeti(lua_State *L, int idx, lua_Integer n)
+{ lua_rawgeti(L, idx, n); return lua_type(L, -1); }
+LUA_API int lua53_rawgetp(lua_State *L, int idx, const void *p)
 { lua_rawgetp(L, idx, p); return lua_type(L, -1); }
 
-static void lua53_rotate(lua_State *L, int idx, int n) {
+LUA_API void lua53_rotate(lua_State *L, int idx, int n) {
   int i;
   if (n < 0)
     n += (idx < 0) ? -idx : (lua_gettop(L)-idx-1);
@@ -854,17 +866,18 @@ LB_API int lbind_getmetatable(lua_State *L, const void *t) {
 }
 
 LB_API int lbind_setmetafield(lua_State *L, int idx, const char *field) {
-  int newmt = 0;
   if (!lua_getmetatable(L, idx)) {
     lua_createtable(L, 0, 1);
-    lua_pushvalue(L, -1);
-    lua_setmetatable(L, lbind_relindex(idx, 2));
-    newmt = 1;
+    lua_pushvalue(L, -2);
+    lua_setfield(L, -2, field);
+    lua_setmetatable(L, lbind_relindex(idx, 1));
+    lua_pop(L, 1);
+    return 1;
   }
   lua_pushvalue(L, -2);
   lua_setfield(L, -2, field);
   lua_pop(L, 2);
-  return newmt;
+  return 0;
 }
 
 LB_API int lbind_setlibcall(lua_State *L, const char *method) {
@@ -1026,6 +1039,7 @@ LB_API void lbind_intern(lua_State *L, const void *p) {
 }
 
 LB_API int lbind_retrieve(lua_State *L, const void *p) {
+  if (p == NULL) return 0;
   lbB_internbox(L); /* 1 */
   if (lua53_rawgetp(L, -1, p) == LUA_TNIL) { /* 2 */
     lua_pop(L, 2);
@@ -1320,11 +1334,12 @@ LB_API void *lbind_check(lua_State *L, int idx, const lbind_Type *t) {
   void *u = NULL;
   if (!check_size(L, idx))
     luaL_argerror(L, idx, "invalid lbind userdata");
-  if (obj != NULL && obj->o.instance == NULL)
+  if (obj == NULL || obj->o.instance == NULL) {
     luaL_argerror(L, idx, "null lbind object");
+    return NULL;
+  }
   u = lbT_testmeta(L, idx, t) ? obj->o.instance : lbT_trycast(L, idx, t);
-  if (u == NULL)
-    lbind_typeerror(L, idx, t->name);
+  if (u == NULL) lbind_typeerror(L, idx, t->name);
   return u;
 }
 
@@ -1449,11 +1464,10 @@ LB_API lbind_EnumItem *lbind_findenum(lbind_Enum *et, const char *s, size_t len)
   return NULL;
 }
 
-LB_API int lbind_pushmask(lua_State *L, int evalue, lbind_Enum *et) {
+LB_API int lbind_pushmask(lua_State *L, int value, lbind_Enum *et) {
   luaL_Buffer b;
   lbind_EnumItem *items;
   int first = 1;
-  unsigned value = lbind_checkmask(L, 2, et);
   if (et->items == NULL) {
     lua_pushliteral(L, "");
     return 0;
@@ -1474,7 +1488,7 @@ LB_API int lbind_pushmask(lua_State *L, int evalue, lbind_Enum *et) {
 }
 
 LB_API int lbind_pushenum(lua_State *L, const char *name, lbind_Enum *et) {
-  lbind_EnumItem *item = lbind_findenum(et, name, -1);
+  lbind_EnumItem *item = lbind_findenum(et, name, ~(size_t)0);
   if (item == NULL)
     return -1;
   lua_pushinteger(L, item->value);
@@ -1662,10 +1676,9 @@ LBLIB_API int luaopen_lbind(lua_State *L) {
 LB_NS_END
 
 #endif /* LBIND_IMPLEMENTATION */
-
 /* vim: set sw=2: */
-/* cc: lua='lua53' run='$lua tt.lua'
- * win32cc: flags+='-mdll -Id:/$lua/include' output='lbind.dll' libs+='-L D:/$lua -l$lua' 
- * maccc: flags+='-bundle -undefined dynamic_lookup' output='lbind.so'
- * cc: flags+='-s -O2 -Wall -std=c99 -pedantic -DLBIND_IMPLEMENTATION -xc' */
-
+/* win32cc: lua='lua53' flags+='-s -O2 -Wall -std=c99 -pedantic -mdll -Id:/$lua/include'
+ * win32cc: flags+='-DLBIND_IMPLEMENTATION -xc' output='lbind.dll' libs+='-l$lua'
+ * maccc: lua='lua53' flags+='-bundle -undefined dynamic_lookup -O2 -Wall -std=c99 -pedantic'
+ * maccc: flags+='-DLBIND_IMPLEMENTATION -xc' output='lbind.so'
+ * cc: run='$lua tt.lua' */
