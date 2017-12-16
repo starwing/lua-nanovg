@@ -6,6 +6,7 @@ ar rcs libnanovg.a *.o
 gcc -s -O3 -mdll -o nvg.dll nanovg.def lua-nanovg.c libnanovg.a -lopengl32 -llua53
 
 @set CFLAGS=-D_GLFW_USE_OPENGL -D_GLFW_WIN32 -D_GLFW_WGL -D_GLFW_BUILD_DLL
+gcc -c -s -O3 %CFLAGS%  glfw\src\osmesa_context.c        
 gcc -c -s -O3 %CFLAGS%  glfw\src\context.c        
 gcc -c -s -O3 %CFLAGS%  glfw\src\init.c           
 gcc -c -s -O3 %CFLAGS%  glfw\src\input.c          
@@ -16,7 +17,7 @@ gcc -c -s -O3 %CFLAGS%  glfw\src\win32_init.c
 gcc -c -s -O3 %CFLAGS%  glfw\src\win32_joystick.c 
 gcc -c -s -O3 %CFLAGS%  glfw\src\win32_monitor.c  
 gcc -c -s -O3 %CFLAGS%  glfw\src\win32_time.c     
-gcc -c -s -O3 %CFLAGS%  glfw\src\win32_tls.c      
+gcc -c -s -O3 %CFLAGS%  glfw\src\win32_thread.c      
 gcc -c -s -O3 %CFLAGS%  glfw\src\win32_window.c   
 gcc -c -s -O3 %CFLAGS%  glfw\src\wgl_context.c    
 gcc -c -s -O3 %CFLAGS%  glfw\src\egl_context.c    

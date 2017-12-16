@@ -78,6 +78,7 @@ static int deinit_glfw(lua_State *L) {
 }
 
 static void init_glfw(lua_State *L) {
+    void *p;
     globalL = L;
     glfwSetErrorCallback(error_cb);
     if (!glfwInit()) {
@@ -87,9 +88,10 @@ static void init_glfw(lua_State *L) {
         lua_concat(L, 2);
         lua_error(L);
     }
-    lua_newuserdata(L, 1);
+    p = lua_newuserdata(L, 1);
     lua_pushcfunction(L, deinit_glfw);
     lbind_setmetafield(L, -2, "__gc");
+    lua_rawsetp(L, LUA_REGISTRYINDEX, p);
 }
 
 static void pushtype_Window(lua_State *L);
@@ -343,6 +345,7 @@ static lbind_EnumItem hints[] = {
     { "accum_green_bits",      GLFW_ACCUM_GREEN_BITS      },
     { "accum_red_bits",        GLFW_ACCUM_RED_BITS        },
     { "alpha_bits",            GLFW_ALPHA_BITS            },
+    { "auto_iconify",          GLFW_AUTO_ICONIFY          },
     { "aux_buffers",           GLFW_AUX_BUFFERS           },
     { "blue_bits",             GLFW_BLUE_BITS             },
     { "client_api",            GLFW_CLIENT_API            },
@@ -383,6 +386,7 @@ static int set_hint(lua_State *L, int hint) {
     case GLFW_SRGB_CAPABLE:
     case GLFW_OPENGL_FORWARD_COMPAT:
     case GLFW_OPENGL_DEBUG_CONTEXT:
+    case GLFW_AUTO_ICONIFY:
         value = lua_toboolean(L, 2);
         break;
     case GLFW_RED_BITS:
