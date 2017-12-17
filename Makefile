@@ -33,8 +33,10 @@ macosx :
 	gcc -c -O3 $(CFLAGS) glfw/src/cocoa_monitor.m
 	gcc -c -O3 $(CFLAGS) glfw/src/cocoa_time.c
 	gcc -c -O3 $(CFLAGS) glfw/src/cocoa_window.m
-	gcc -c -O3 $(CFLAGS) glfw/src/posix_tls.c
+	gcc -c -O3 $(CFLAGS) glfw/src/posix_thread.c
 	gcc -c -O3 $(CFLAGS) glfw/src/nsgl_context.m
+	gcc -c -O3 $(CFLAGS) glfw/src/egl_context.c
+	gcc -c -O3 $(CFLAGS) glfw/src/osmesa_context.c
 	ar rcs libglfw3.a *.o
 	rm -fr *.o
 	gcc -O3 -bundle -undefined dynamic_lookup -o glfw.so \
