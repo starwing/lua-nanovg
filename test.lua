@@ -55,7 +55,7 @@ local function drawWindow(ctx, title, x, y, w, h)
    ctx.fontBlur = 2
    ctx.fillStyle = "#80000000"
    ctx:text(x+w/2, y+16+1, title)
-   
+
    ctx.fontBlur = 0
    ctx.fillStyle = "#A0DCDCDC"
    ctx:text(x+w/2, y+16,  title)
@@ -116,7 +116,7 @@ local function drawDropDown(ctx, text, x, y, w, h)
    ctx:text(x+w-h*0.55, y+h*0.55, icons.chevron_right)
 end
 
-local function drawLabel(ctx, text, x, y, w, h)
+local function drawLabel(ctx, text, x, y, _, h)
    ctx.fontSize = 18
    ctx.fontFace = "sans"
    ctx.fillStyle = "#80FFFFFF"
@@ -164,7 +164,7 @@ local function drawEditBoxNum(ctx, text, units, x, y, w, h)
    ctx:text(x+w-uw-h*0.5,y+h*0.5,text)
 end
 
-local function drawCheckBox(ctx, text, x, y, w, h)
+local function drawCheckBox(ctx, text, x, y, _, h)
    ctx.fontSize = 18
    ctx.fontFace = "sans"
    ctx.fillStyle = "rgba(255,255,255,160)"
@@ -186,7 +186,7 @@ end
 
 local function drawButton(ctx, preicon, text, x, y, w, h, col)
    local cornerRadius = 4
-   local tw, iw = 0, 0
+   local iw = 0
    col = color.parse(col)
 
    ctx:beginPath(ctx)
@@ -207,7 +207,7 @@ local function drawButton(ctx, preicon, text, x, y, w, h, col)
 
    ctx.fontSize = 20
    ctx.fontFace = "sans-bold"
-   tw = ctx:textBounds(text)
+   local tw = ctx:textBounds(text)
    if preicon then
       ctx.fontSize = h*1.3
       ctx.fontFace = "icons"
@@ -292,31 +292,35 @@ local function drawEyes(ctx, x, y, w, h, mx, my, t)
       "rgba(220,220,220,255)", "rgba(128,128,128,255)")
    ctx:fill()
 
-   local dx = (mx - rx) / (ex * 10)
-   local dy = (my - ry) / (ey * 10)
-   local d = math.sqrt(dx*dx+dy*dy)
-   if d > 1 then
-      dx, dy = dx / d, dy / d
+   do
+      local dx = (mx - rx) / (ex * 10)
+      local dy = (my - ry) / (ey * 10)
+      local d = math.sqrt(dx*dx+dy*dy)
+      if d > 1 then
+         dx, dy = dx / d, dy / d
+      end
+      dx = dx * ex*0.4
+      dy = dy * ey*0.5
+      ctx:beginPath()
+      ctx:ellipse(lx+dx,ly+dy+ey*0.25*(1-blink), br,br*blink)
+      ctx.fillStyle = "rgba(32,32,32,255)"
+      ctx:fill()
    end
-   dx = dx * ex*0.4
-   dy = dy * ey*0.5
-   ctx:beginPath()
-   ctx:ellipse(lx+dx,ly+dy+ey*0.25*(1-blink), br,br*blink)
-   ctx.fillStyle = "rgba(32,32,32,255)"
-   ctx:fill()
 
-   local dx = (mx - rx) / (ex * 10)
-   local dy = (my - ry) / (ey * 10)
-   local d = math.sqrt(dx*dx+dy*dy)
-   if d > 1 then
-      dx, dy = dx / d, dy / d
+   do
+      local dx = (mx - rx) / (ex * 10)
+      local dy = (my - ry) / (ey * 10)
+      local d = math.sqrt(dx*dx+dy*dy)
+      if d > 1 then
+         dx, dy = dx / d, dy / d
+      end
+      dx = dx * ex*0.4
+      dy = dy * ey*0.5
+      ctx:beginPath()
+      ctx:ellipse(rx+dx,ry+dy+ey*0.25*(1-blink), br,br*blink)
+      ctx.fillStyle = "rgba(32,32,32,255)"
+      ctx:fill()
    end
-   dx = dx * ex*0.4
-   dy = dy * ey*0.5
-   ctx:beginPath()
-   ctx:ellipse(rx+dx,ry+dy+ey*0.25*(1-blink), br,br*blink)
-   ctx.fillStyle = "rgba(32,32,32,255)"
-   ctx:fill()
 
    ctx:beginPath()
    ctx:ellipse(lx,ly, ex,ey)
@@ -479,8 +483,8 @@ local function drawColorWheel(ctx, x, y, w, h, t)
    ctx:stroke()
 
    -- Select circle on triangle
-   local ax = math.cos(120.0/180.0*math.pi) * r*0.3
-   local ay = math.sin(120.0/180.0*math.pi) * r*0.4
+   ax = math.cos(120.0/180.0*math.pi) * r*0.3
+   ay = math.sin(120.0/180.0*math.pi) * r*0.4
    ctx.strokeWidth = 2
    ctx:beginPath()
    ctx:circle(ax,ay,5)
@@ -499,7 +503,7 @@ local function drawColorWheel(ctx, x, y, w, h, t)
 end
 
 local function renderDemo(ctx, mx, my, width, height, t, blowup)
-   local x, y, popy
+   local x, y
 
    drawEyes(ctx, width-250, 50, 150, 100, mx, my, t)
    drawGraph(ctx, 0, height/2, width, height/2, t)
@@ -517,7 +521,7 @@ local function renderDemo(ctx, mx, my, width, height, t, blowup)
    drawSearchBox(ctx, "Search", x, y, 280, 25)
    y = y + 40
    drawDropDown(ctx, "Effects", x,y, 280, 28)
-   popy = y + 14
+   -- popy = y + 14
    y = y + 45
 
    -- Form
@@ -552,16 +556,17 @@ local canvas = nvg.new "antialias"
 loadData(canvas)
 
 local prevt = glfw.time()
+local blowup = nil
 
 while not w:shouldclose() do
    if w:key "esc" then break end
    local ww, wh = w:size()
-   local pw, ph = w:fbsize()
+   local pw, _ = w:fbsize()
    local ratio = pw/ww
 
    local mx, my = w:cursorpos()
    local t = glfw.time()
-   local dt = t - prevt
+   local _ = t - prevt
    prevt = t
 
    canvas:beginFrame(ww, wh, ratio)
