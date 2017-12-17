@@ -548,7 +548,6 @@ local function renderDemo(ctx, mx, my, width, height, t, blowup)
    ctx:restore()
 end
 
-glfw.hint("context_version", 2, 0);
 local w = assert(glfw.window(1000, 600, "Demo"))
 w:makecurrent()
 

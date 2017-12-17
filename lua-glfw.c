@@ -27,7 +27,15 @@ static int Lpoll(lua_State *L) {
 }
 
 static int Lwait(lua_State *L) {
-    glfwWaitEvents();
+    if (lua_isnoneornil(L, 1))
+        glfwWaitEvents();
+    else
+        glfwWaitEventsTimeout((double)luaL_checknumber(L, 1));
+    return 0;
+}
+
+static int Lpostevent(lua_State *L) {
+    glfwPostEmptyEvent();
     return 0;
 }
 
@@ -92,6 +100,8 @@ static void init_glfw(lua_State *L) {
     lua_pushcfunction(L, deinit_glfw);
     lbind_setmetafield(L, -2, "__gc");
     lua_rawsetp(L, LUA_REGISTRYINDEX, p);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 }
 
 static void pushtype_Window(lua_State *L);
@@ -103,6 +113,7 @@ LBLIB_API int luaopen_glfw(lua_State *L) {
         ENTRY(wait),
         ENTRY(time),
         ENTRY(hint),
+        ENTRY(postevent),
         ENTRY(swapinterval),
 #undef  ENTRY
         { NULL, NULL }
@@ -438,8 +449,10 @@ static int set_hint(lua_State *L, int hint) {
     return 0;
 }
 
-/* cc: flags+='-Iglfw/include'
- * win32cc: flags+='-s -O2 -mdll -DLUA_BUILD_AS_DLL'
+/* win32cc: flags+='-s -O2 -mdll -DLUA_BUILD_AS_DLL -Iglfw/include'
  * win32cc: libs+='-lglfw3 -llua53 -lopengl32 -lgdi32' output='glfw.dll'
- * maccc: flags+='-s -O2 -bundle -undefined dynamic_lookup' output="glfw.so" */
+ * maccc: flags+='-Iglfw/include -O3 -bundle -undefined dynamic_lookup'
+ * maccc: libs+='libglfw3.a -framework OpenGL -framework CoreGraphics '
+ * maccc: libs+='-framework Foundation -framework Cocoa -framework IoKit'
+ * maccc: libs+='-framework CoreVideo' output="glfw.so" */
 

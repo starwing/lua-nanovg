@@ -45,6 +45,8 @@ typedef struct LNVGimage LNVGimage;
 static NVGcolor check_color(lua_State *L, int idx);
 static int test_color(lua_State *L, int idx, NVGcolor *color);
 static int test_paint(lua_State *L, int idx, NVGpaint *paint);
+static int opentype_image(lua_State *L);
+
 
 #define check_context(L, idx) ((NVGcontext*)lbind_check((L),(idx),&lbT_Context))
 #define check_image(L, idx)   ((LNVGimage*)lbind_check((L),(idx),&lbT_Image))
@@ -138,7 +140,6 @@ static int LradialGradient(lua_State *L) {
     return 1;
 }
 
-
 /* state routines */
 
 static int Lclear(lua_State *L) {
@@ -155,6 +156,11 @@ static int LbeginFrame(lua_State *L) {
     float ratio = (float)luaL_optnumber(L, 4, 1.0);
     glViewport(0, 0, w*ratio, h*ratio);
     nvgBeginFrame(ctx, w, h, ratio);
+    lbind_returnself(L);
+}
+
+static int LcancelFrame(lua_State *L) {
+    nvgCancelFrame(check_context(L, 1));
     lbind_returnself(L);
 }
 
@@ -178,14 +184,27 @@ static int Lreset(lua_State *L) {
     lbind_returnself(L);
 }
 
-
 /* transform routines */
+
 static int LresetTransform(lua_State *L) {
     nvgResetTransform(check_context(L, 1));
     lbind_returnself(L);
 }
 
-static int set_transform(lua_State *L, int reset) {
+static int LcurrentTransform(lua_State *L) {
+    NVGcontext *ctx = check_context(L, 1);
+    float d[6];
+    nvgCurrentTransform(ctx, d);
+    lua_pushnumber(L, d[0]);
+    lua_pushnumber(L, d[3]);
+    lua_pushnumber(L, d[1]);
+    lua_pushnumber(L, d[4]);
+    lua_pushnumber(L, d[2]);
+    lua_pushnumber(L, d[5]);
+    return 6;
+}
+
+static int Ltransform(lua_State *L) {
     NVGcontext *ctx = check_context(L, 1);
     float a = (float)luaL_optnumber(L, 2, 1.0);
     float b = (float)luaL_optnumber(L, 3, 0.0);
@@ -193,17 +212,8 @@ static int set_transform(lua_State *L, int reset) {
     float d = (float)luaL_optnumber(L, 5, 0.0);
     float e = (float)luaL_optnumber(L, 6, 1.0);
     float f = (float)luaL_optnumber(L, 7, 0.0);
-    if (reset) nvgResetTransform(ctx);
     nvgTransform(ctx, a, b, c, d, e, f);
     lbind_returnself(L);
-}
-
-static int LsetTransform(lua_State *L) {
-    return set_transform(L, 1);
-}
-
-static int Ltransform(lua_State *L) {
-    return set_transform(L, 0);
 }
 
 static int Ltranslate(lua_State *L) {
@@ -231,17 +241,15 @@ static int Lrotate(lua_State *L) {
 
 static int Lskew(lua_State *L) {
     NVGcontext *ctx = check_context(L, 1);
-    float x = (float)luaL_checknumber(L, 2);
-    float y = (float)luaL_checknumber(L, 3);
-    if (x != 0.0)
-        nvgSkewX(ctx, x);
-    if (y != 0.0)
-        nvgSkewY(ctx, y);
+    float x = (float)luaL_optnumber(L, 2, 0.0);
+    float y = (float)luaL_optnumber(L, 3, 0.0);
+    if (x != 0.0) nvgSkewX(ctx, x);
+    if (y != 0.0) nvgSkewY(ctx, y);
     lbind_returnself(L);
 }
 
-
 /* scissor support */
+
 static int LresetScissor(lua_State *L) {
     nvgResetScissor(check_context(L, 1));
     lbind_returnself(L);
@@ -257,8 +265,79 @@ static int Lscissor(lua_State *L) {
     lbind_returnself(L);
 }
 
+static int LintersectScissor(lua_State *L) {
+    NVGcontext *ctx = check_context(L, 1);
+    float x = (float)luaL_checknumber(L, 2);
+    float y = (float)luaL_checknumber(L, 3);
+    float w = (float)luaL_checknumber(L, 4);
+    float h = (float)luaL_checknumber(L, 5);
+    nvgIntersectScissor(ctx, x, y, w, h);
+    lbind_returnself(L);
+}
+
+/* composite operation */
+
+static lbind_EnumItem composite_operations[] = {
+    { "atop",             NVG_ATOP             },
+    { "copy",             NVG_COPY             },
+    { "destination_atop", NVG_DESTINATION_ATOP },
+    { "destination_in",   NVG_DESTINATION_IN   },
+    { "destination_out",  NVG_DESTINATION_OUT  },
+    { "destination_over", NVG_DESTINATION_OVER },
+    { "ligther",          NVG_LIGHTER          },
+    { "source_in",        NVG_SOURCE_IN        },
+    { "source_out",       NVG_SOURCE_OUT       },
+    { "xor",              NVG_XOR              },
+    { "source_over",      NVG_SOURCE_OVER      },
+    { NULL, 0 }
+};
+
+static lbind_EnumItem blend_factors[] = {
+    { "dst_alpha",            NVG_DST_ALPHA            },
+    { "dst_color",            NVG_DST_COLOR            },
+    { "one",                  NVG_ONE                  },
+    { "one_minus_dst_alpha",  NVG_ONE_MINUS_DST_ALPHA  },
+    { "one_minus_dst_color",  NVG_ONE_MINUS_DST_COLOR  },
+    { "one_minus_src_alpha",  NVG_ONE_MINUS_SRC_ALPHA  },
+    { "one_minus_src_color",  NVG_ONE_MINUS_SRC_COLOR  },
+    { "src_alpha",            NVG_SRC_ALPHA            },
+    { "src_alpha_saturate",   NVG_SRC_ALPHA_SATURATE   },
+    { "src_color",            NVG_SRC_COLOR            },
+    { "zero",                 NVG_ZERO                 },
+    { NULL, 0 }
+};
+
+static int LglobalCompositeOperation(lua_State *L) {
+    static lbind_Enum et = LBIND_INITENUM("CompositeOperation",
+            composite_operations);
+    NVGcontext *ctx = check_context(L, 1);
+    int op = lbind_checkenum(L, 2, &et);
+    nvgGlobalCompositeOperation(ctx, op);
+    lbind_returnself(L);
+}
+
+static int LglobalCompositeBlendFunc(lua_State *L) {
+    static lbind_Enum et = LBIND_INITENUM("BlendFactor", blend_factors);
+    NVGcontext *ctx = check_context(L, 1);
+    int sfactor = lbind_checkenum(L, 2, &et);
+    int dfactor = lbind_checkenum(L, 3, &et);
+    nvgGlobalCompositeBlendFunc(ctx, sfactor, dfactor);
+    lbind_returnself(L);
+}
+
+static int LglobalCompositeBlendFuncSeparate(lua_State *L) {
+    static lbind_Enum et = LBIND_INITENUM("BlendFactor", blend_factors);
+    NVGcontext *ctx = check_context(L, 1);
+    int srcRGB   = lbind_checkenum(L, 2, &et);
+    int dstRGB   = lbind_checkenum(L, 3, &et);
+    int srcAlpha = lbind_checkenum(L, 4, &et);
+    int dstAlpha = lbind_checkenum(L, 5, &et);
+    nvgGlobalCompositeBlendFuncSeparate(ctx, srcRGB, dstRGB, srcAlpha, dstAlpha);
+    lbind_returnself(L);
+}
 
 /* path routines */
+
 static int LbeginPath(lua_State *L) {
     nvgBeginPath(check_context(L, 1));
     lbind_returnself(L);
@@ -318,8 +397,8 @@ static int LclosePath(lua_State *L) {
     lbind_returnself(L);
 }
 
-
 /* primitive routines */
+
 static int Larc(lua_State *L) {
     static lbind_EnumItem opts[] = {
         { "ccw", NVG_CCW },
@@ -355,7 +434,14 @@ static int LroundedRect(lua_State *L) {
     float w = (float)luaL_checknumber(L, 4);
     float h = (float)luaL_checknumber(L, 5);
     float r = (float)luaL_checknumber(L, 6);
-    nvgRoundedRect(ctx, x, y, w, h, r);
+    if (lua_gettop(L) == 6)
+        nvgRoundedRect(ctx, x, y, w, h, r);
+    else {
+        float r2 = (float)luaL_checknumber(L, 7);
+        float r3 = (float)luaL_checknumber(L, 8);
+        float r4 = (float)luaL_checknumber(L, 9);
+        nvgRoundedRectVarying(ctx, x, y, w, h, r, r2, r3, r4);
+    }
     lbind_returnself(L);
 }
 
@@ -387,7 +473,6 @@ static int Lstroke(lua_State *L) {
     nvgStroke(check_context(L, 1));
     lbind_returnself(L);
 }
-
 
 /* text routines */
 
@@ -474,9 +559,22 @@ static int LtextMetrics(lua_State *L) {
     return 3;
 }
 
+static int LaddFallbackFont(lua_State *L) {
+    NVGcontext *ctx = check_context(L, 1);
+    const char *font = luaL_checkstring(L, 2);
+    const char *fallback = luaL_checkstring(L, 3);
+    nvgAddFallbackFont(ctx, font, fallback);
+    return 0;
+}
 
 /* context settings */
 
+static int LshapeAntiAlias(lua_State *L) {
+    NVGcontext *ctx = check_context(L, 1);
+    int enabled = lua_toboolean(L, 3);
+    nvgShapeAntiAlias(ctx, enabled);
+    return 0;
+}
 
 static int LglobalAlpha(lua_State *L) {
     NVGcontext *ctx = check_context(L, 1);
@@ -635,10 +733,7 @@ static int LfillStyle(lua_State *L) {
     return 0;
 }
 
-
 /* register lua routines */
-
-static int opentype_image(lua_State *L);
 
 LBLIB_API int luaopen_nvg(lua_State *L) {
     luaL_Reg libs[] = {
@@ -654,13 +749,14 @@ LBLIB_API int luaopen_nvg(lua_State *L) {
         /* state routines */
         ENTRY(clear),
         ENTRY(beginFrame),
+        ENTRY(cancelFrame),
         ENTRY(endFrame),
         ENTRY(save),
         ENTRY(restore),
         ENTRY(reset),
         /* transform routines */
         ENTRY(resetTransform),
-        ENTRY(setTransform),
+        ENTRY(currentTransform),
         ENTRY(transform),
         ENTRY(translate),
         ENTRY(scale),
@@ -669,6 +765,11 @@ LBLIB_API int luaopen_nvg(lua_State *L) {
         /* scissor support */
         ENTRY(resetScissor),
         ENTRY(scissor),
+        ENTRY(intersectScissor),
+        /* composite operation */
+        ENTRY(globalCompositeOperation),
+        ENTRY(globalCompositeBlendFunc),
+        ENTRY(globalCompositeBlendFuncSeparate),
         /* path routines */
         ENTRY(beginPath),
         ENTRY(moveTo),
@@ -689,11 +790,13 @@ LBLIB_API int luaopen_nvg(lua_State *L) {
         ENTRY(text),
         ENTRY(textMetrics),
         ENTRY(textBounds),
+        ENTRY(addFallbackFont),
 #undef  ENTRY
         { NULL, NULL }
     };
     luaL_Reg setters[] = {
 #define ENTRY(name) { #name, L##name }
+        ENTRY(shapeAntiAlias),
         ENTRY(globalAlpha),
         ENTRY(strokeColor),
         ENTRY(fillColor),
@@ -775,16 +878,18 @@ static LNVGimage *new_image(lua_State *L) {
 }
 
 static lbind_EnumItem image_flags[] = {
+    { "flipy",    NVG_IMAGE_FLIPY            },
     { "mipmaps",  NVG_IMAGE_GENERATE_MIPMAPS },
-    { "repeatx",  NVG_IMAGE_REPEATX },
-    { "repeaty",  NVG_IMAGE_REPEATY },
-    { "flipy",    NVG_IMAGE_FLIPY },
-    { "premulti", NVG_IMAGE_PREMULTIPLIED },
+    { "nearest",  NVG_IMAGE_NEAREST          },
+    { "premulti", NVG_IMAGE_PREMULTIPLIED    },
+    { "repeatx",  NVG_IMAGE_REPEATX          },
+    { "repeaty",  NVG_IMAGE_REPEATY          },
     { NULL, 0 }
 };
-static lbind_Enum lbE_imageflags = LBIND_INITENUM("ImageFlags", image_flags);
 
 static int Limage_load(lua_State *L) {
+    static lbind_Enum lbE_imageflags =
+        LBIND_INITENUM("ImageFlags", image_flags);
     LNVGimage *image;
     NVGcontext *ctx = check_context(L, 1);
     const char *filename = luaL_checkstring(L, 2);
@@ -799,6 +904,8 @@ static int Limage_load(lua_State *L) {
 }
 
 static int Limage_data(lua_State *L) {
+    static lbind_Enum lbE_imageflags =
+        LBIND_INITENUM("ImageFlags", image_flags);
     LNVGimage *image;
     NVGcontext *ctx = check_context(L, 1);
     size_t len;
@@ -814,6 +921,8 @@ static int Limage_data(lua_State *L) {
 }
 
 static int Limage_rgba(lua_State *L) {
+    static lbind_Enum lbE_imageflags =
+        LBIND_INITENUM("ImageFlags", image_flags);
     LNVGimage *image;
     NVGcontext *ctx = check_context(L, 1);
     int w = luaL_checkinteger(L, 2);
@@ -1306,6 +1415,6 @@ LBLIB_API int luaopen_nvg_color(lua_State *L) {
 
 /* win32cc: flags+='-s -O3 -shared' libs+='-lopengl32 -llua53'
  * win32cc: output+='nanovg.def' output='nvg.dll'
- * maccc: flags+='-O3 -bundle -undefined dynamic_lookup' output='nvg.so'
- * cc: input+='nanovg.o' */
+ * maccc: flags+='-O3 -bundle -undefined dynamic_lookup'
+ * maccc: libs+='libnanovg.a' output='nvg.so' */
 
