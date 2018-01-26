@@ -30,10 +30,12 @@ LUA_API void lua53_rotate(lua_State *L, int idx, int n);
 # define lua_setuservalue              lua_setfenv
 # define lua_rawlen                    lua_objlen
 
+#ifndef luaL_newlib
 # define luaL_newlibtable(L,l)	\
    lua_createtable(L, 0, sizeof(l)/sizeof((l)[0]) - 1)
 # define luaL_newlib(L,l) \
    (luaL_newlibtable(L,l), luaL_setfuncs(L,l,0))
+#endif
 
 LUA_API lua_Integer (lua_tointegerx) (lua_State *L, int idx, int *valid);
 LUA_API void (lua_rawsetp) (lua_State *L, int idx, const void *p);
@@ -1017,7 +1019,7 @@ LB_API void *lbind_delete(lua_State *L, int idx) {
 #if LUA_VERSION_NUM < 502
       lbB_internbox(L); /* 1 */
       lua_pushnil(L); /* 2 */
-      lua_rawsetp(L, -3, u); /* 2->1 */
+      lua_rawsetp(L, -2, u); /* 2->1 */
       lua_pop(L, 1); /* (1) */
 #endif
     }
@@ -1677,8 +1679,8 @@ LB_NS_END
 
 #endif /* LBIND_IMPLEMENTATION */
 /* vim: set sw=2: */
-/* win32cc: lua='lua53' flags+='-s -O2 -Wall -std=c99 -pedantic -mdll -Id:/$lua/include'
- * win32cc: flags+='-DLBIND_IMPLEMENTATION -xc' output='lbind.dll' libs+='-l$lua'
+/* win32cc: lua='luajit' flags+='-s -O2 -Wall -std=c99 -pedantic -mdll -Id:/$lua/include'
+ * win32cc: flags+='-DLBIND_IMPLEMENTATION -xc' output='lbind.dll' libs+='-Ld:/$lua/lib -l$lua'
  * maccc: lua='lua53' flags+='-bundle -undefined dynamic_lookup -O2 -Wall -std=c99 -pedantic'
  * maccc: flags+='-DLBIND_IMPLEMENTATION -xc' output='lbind.so'
  * cc: run='$lua tt.lua' */
