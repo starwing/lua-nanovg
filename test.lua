@@ -2,6 +2,7 @@ local glfw = require "moonglfw"
 local nvg = require "nvg"
 local color = require "nvg.color"
 
+
 local icons = {
    search        = "\xF0\x9F\x94\x8D",
    circled_cross = "\xE2\x9C\x96",
@@ -15,6 +16,13 @@ local function loadData(ctx)
    ctx:font("sans-bold",  "nanovg/example/Roboto-Bold.ttf")
    ctx:font("sans",       "nanovg/example/Roboto-Regular.ttf")
    ctx:font("icons",      "nanovg/example/entypo.ttf")
+   im = ctx:image("nanovg/example/images/image1.png", "flipy")
+   svg = ctx:image("nanosvg/example/nano.svg", "flipy")
+   return {
+     context = ctx,
+     im = im,
+     svg = svg,
+   }
 end
 
 local function drawWindow(ctx, title, x, y, w, h)
@@ -499,7 +507,14 @@ local function drawColorWheel(ctx, x, y, w, h, t)
    ctx:fill()
 
    ctx:restore()
-   ctx:restore()
+end
+
+local function drawImages(ctx, width, height)
+  ctx.strokeWidth = 2
+  ctx:beginPath()
+  ctx.fillStyle = loaded.im
+  ctx:fill()
+  ctx:restore()
 end
 
 local function renderDemo(ctx, mx, my, width, height, t, blowup)
@@ -544,17 +559,28 @@ local function renderDemo(ctx, mx, my, width, height, t, blowup)
 
    drawButton(ctx, icons.trash, "Delete", x, y, 160, 28, "rgba(128,16,8,255)")
    drawButton(ctx, nil, "Cancel", x+170, y, 110, 28, "rgba(0,0,0,0)");
+   
+   drawImages(ctx, width, height)
 
    ctx:restore()
+end
+
+local function renderDemoMinimal(ctx, mx, my, width, height, t, blowup)
+  local x, y
+  ctx:save()
+  drawImages(ctx, width, height)
+  ctx:restore()
 end
 
 w = glfw.create_window(640, 480, "Hello world!")
 glfw.make_context_current(w)
 -- Only after this we can use nanovg
 local canvas = nvg.new "antialias"
-loadData(canvas)
+loaded = loadData(canvas)
+
 -- Repeatedly poll for events:
 while not glfw.window_should_close(w) do
+  if glfw.get_key(w, "escape") == 'press' then break end
   t = glfw.get_time()
   ww, wh = glfw.get_window_size(w)
   mx, my = glfw.get_cursor_pos(w)
@@ -562,7 +588,7 @@ while not glfw.window_should_close(w) do
   local ratio = pw/ww
   canvas:beginFrame(ww, wh, ratio)
   canvas:clear "#4C4C51"
-  renderDemo(canvas, mx, my, ww, wh, t, blowup)
+  renderDemoMinimal(canvas, mx, my, ww, wh, t, blowup)
   canvas:endFrame()
   glfw.swap_buffers(w)
   glfw.poll_events()
