@@ -9,7 +9,7 @@ old/*
 *.dll
 *.o
 *.a
-
+*.vscode
 # Build results
 
 [Dd]ebug/
