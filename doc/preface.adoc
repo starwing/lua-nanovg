@@ -1,0 +1,93 @@
+
+== Preface
+
+This is the reference manual of *lua-nanovg*, which is a 
+http://www.lua.org[*Lua*] binding library for https://github.com/memononen/nanovg[*NanoVG*] and for https://github.com/memononen/nanosvg[*NanoSVG*]. 
+footnote:[
+This manual is written in
+http://www.methods.co.nz/asciidoc/[AsciiDoc], rendered with
+http://asciidoctor.org/[AsciiDoctor] and a CSS from the
+https://github.com/asciidoctor/asciidoctor-stylesheet-factory[AsciiDoctor Stylesheet Factory].
+The PDF version is produced with
+https://github.com/asciidoctor/asciidoctor-pdf[AsciiDoctor-Pdf].]
+
+It is assumed that the reader is familiar with NanoVG, NanoSVG, GLFW(through https://github.com/stetre/moonglfw[*moonglfw*]) and the Lua programming language.
+
+For convenience of reference, this document contains external (deep) links to the 
+http://www.lua.org/manual/5.3/manual.html[Lua Reference Manual] and the 
+http://www.glfw.org/documentation.html[GLFW documentation].
+
+=== Getting and installing
+
+For installation intructions, refer to the README file in the 
+https://github.com/starwing/lua-nanovg[*lua-nanovg official repository*]
+on GitHub.
+
+////
+The *official repository* of lua-nanovg is on GitHub at the following link:
+*https://github.com/starwing/lua-nanovg* .
+
+lua-nanovg runs on GNU/Linux and requires 
+*http://www.lua.org[Lua]* version 5.3 or greater, and
+*http://www.glfw.org/download.html[GLFW]* version 3.1 or greater.
+
+To install lua-nanovg, download the 
+https://github.com/starwing/lua-nanovg/releases[latest release] and do the following:
+
+[source,shell]
+----
+# ... download lua-nanovg-0.1.tar.gz ...
+[ ]$ tar -zxpvf lua-nanovg-0.1.tar.gz
+[ ]$ cd lua-nanovg-0.1
+[lua-nanovg-0.1]$ make
+[lua-nanovg-0.1]$ make check
+[lua-nanovg-0.1]$ sudo make install
+----
+
+The _$make check_ command shows you what will be installed and where (please read
+its output before executing _$make install_).
+By default, lua-nanovg installs its components in subdirectories of `/usr/local/`
+(and creates such directories, if needed).
+This behaviour can be changed by defining PREFIX with the desired alternative 
+base installation directory. For example, this will install the components
+in `/home/joe/local`:
+
+[source,shell]
+----
+[lua-nanovg-0.1]$ make
+[lua-nanovg-0.1]$ make install PREFIX=/home/joe/local
+----
+////
+
+=== Module organization
+
+The lua-nanovg module is loaded using Lua's 
+http://www.lua.org/manual/5.3/manual.html#pdf-require[require]() and
+returns a table containing the functions it provides 
+(as usual with Lua modules). This manual assumes that such
+table is named *nvg*, i.e. that it is loaded with:
+
+[source,lua,indent=1]
+----
+local nvg = require("nvg")
+----
+
+but nothing forbids the use of a different name.
+
+=== Examples
+
+A few examples can be found in the *examples/* directory of the release package.
+
+=== License
+
+lua-nanovg is released under the *MIT/X11 license* (same as
+http://www.lua.org/license.html[Lua], and with the same only requirement to give proper
+credits to the original author). 
+The copyright notice is in the LICENSE file in the base directory
+of the https://github.com/starwing/lua-nanovg[official repository] on GitHub.
+
+[[see-also]]
+=== See also
+
+moonglfw is part of https://github.com/stetre/moonlibs[MoonLibs], a collection of 
+Lua libraries for graphics and audio programming.
