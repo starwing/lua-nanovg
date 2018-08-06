@@ -6,7 +6,6 @@
 #define LBIND_IMPLEMENTATION
 #include "lbind.h"
 
-
 #define LOADGL_STATIC_API
 #ifdef __APPLE__
 #include "gl_2_0_core.h"
@@ -840,6 +839,7 @@ struct LNVGimage {
 };
 
 static NVGpaint image_to_paint(LNVGimage *image) {
+    // fprintf(stdout, "converting image `%d` to paint: {ox: %f, oy: %f, ex: %f, ey: %f}\n", image->image, image->ox, image->oy, image->ex, image->ey);
     return nvgImagePattern(image->ctx,
             image->ox, image->oy, image->ex, image->ey,
             image->angle, image->image, image->alpha);
@@ -908,12 +908,14 @@ static int Limage_load(lua_State *L) {
     }
     const char *ext = strrchr(filename, '.');
     int imageid = -1;
+    // defaults
+    float ex = 0.0f;
+    float ey = 0.0f;
     if (stricmp(".svg", ext) == 0) {
         // is SVG
         NSVGrasterizer *rast = nsvgCreateRasterizer();
         if (rast == NULL) {
-            fprintf(stderr, "Failed allocating rasterizer\n");
-            return -1;
+            return luaL_error(L, "Failed allocating rasterizer");
         }
         NSVGimage *vector = nsvgParseFromFile(filename, "px", dpi);
         if (vector != NULL) {
@@ -921,17 +923,20 @@ static int Limage_load(lua_State *L) {
             int h = (int)vector->height;
             unsigned char* img = malloc(w * h * 4);
             if (img == NULL) {
-                fprintf(stderr, "Failed allocating raster image buffer `%s`\n", filename);
+                return luaL_error(L, "Failed allocating raster image buffer");
             } else {
                 nsvgRasterize(rast, vector, 0,0,1, img, w, h, w*4);
                 imageid = nvgCreateImageRGBA(ctx, w, h, flags, img);
+                if (imageid > 0) {
+                    ex = w;
+                    ey = h;
+                }
             }
         }
         if (rast != NULL) {
             nsvgDeleteRasterizer(rast);
         }
     } else {
-        // is not SVG
         imageid = nvgCreateImage(ctx, filename, flags);
     }
     if (imageid < 0)
@@ -939,6 +944,8 @@ static int Limage_load(lua_State *L) {
     image = new_image(L);
     image->image = imageid;
     image->ctx = ctx;
+    image->ex = ex;
+    image->ey = ey;
     return 1;
 }
 

@@ -1,6 +1,7 @@
 local glfw = require "moonglfw"
 local nvg = require "nvg"
 local color = require "nvg.color"
+local pprint = require "pprint"
 
 
 local icons = {
@@ -16,8 +17,10 @@ local function loadData(ctx)
    ctx:font("sans-bold",  "nanovg/example/Roboto-Bold.ttf")
    ctx:font("sans",       "nanovg/example/Roboto-Regular.ttf")
    ctx:font("icons",      "nanovg/example/entypo.ttf")
-   im = ctx:image("nanovg/example/images/image1.png", "flipy")
-   svg = ctx:image("nanosvg/example/nano.svg", "flipy")
+   im = ctx:image("nanovg/example/images/image1.jpg")
+   svg = ctx:image("nanosvg/example/nano.svg")
+   print("Loaded JPG image width: "..im.width..", height: "..im.height)
+   print("Loaded SVG image width: "..svg.width..", height: "..svg.height)
    return {
      context = ctx,
      im = im,
@@ -510,9 +513,18 @@ local function drawColorWheel(ctx, x, y, w, h, t)
 end
 
 local function drawImages(ctx, width, height)
-  ctx.strokeWidth = 2
+  local dx = 144
+  local dy = 44
   ctx:beginPath()
+  ctx:rect(dx,dy , loaded.im.width, loaded.im.height)
+  loaded.im:extent(dx,dy, loaded.im.width, loaded.im.height)
   ctx.fillStyle = loaded.im
+  ctx:fill()
+
+  ctx:beginPath()
+  ctx:rect(dx*2 + 10,dy , loaded.svg.width, loaded.svg.height)
+  loaded.svg:extent(dx,dy, loaded.svg.width, loaded.svg.height)
+  ctx.fillStyle = loaded.svg
   ctx:fill()
   ctx:restore()
 end
@@ -588,6 +600,7 @@ while not glfw.window_should_close(w) do
   local ratio = pw/ww
   canvas:beginFrame(ww, wh, ratio)
   canvas:clear "#4C4C51"
+  renderDemo(canvas, mx, my, ww, wh, t, blowup)
   renderDemoMinimal(canvas, mx, my, ww, wh, t, blowup)
   canvas:endFrame()
   glfw.swap_buffers(w)
