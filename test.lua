@@ -1,4 +1,4 @@
-local glfw = require "glfw"
+local glfw = require "moonglfw"
 local nvg = require "nvg"
 local color = require "nvg.color"
 
@@ -548,31 +548,22 @@ local function renderDemo(ctx, mx, my, width, height, t, blowup)
    ctx:restore()
 end
 
-local w = assert(glfw.window(1000, 600, "Demo"))
-w:makecurrent()
-
+w = glfw.create_window(640, 480, "Hello world!")
+glfw.make_context_current(w)
+-- Only after this we can use nanovg
 local canvas = nvg.new "antialias"
 loadData(canvas)
-
-local prevt = glfw.time()
-local blowup = nil
-
-while not w:shouldclose() do
-   if w:key "esc" then break end
-   local ww, wh = w:size()
-   local pw, _ = w:fbsize()
-   local ratio = pw/ww
-
-   local mx, my = w:cursorpos()
-   local t = glfw.time()
-   local _ = t - prevt
-   prevt = t
-
-   canvas:beginFrame(ww, wh, ratio)
-   canvas:clear "#4C4C51"
-   renderDemo(canvas, mx, my, ww, wh, t, blowup)
-   canvas:endFrame()
-
-   w:swapbuffers()
-   glfw.poll()
+-- Repeatedly poll for events:
+while not glfw.window_should_close(w) do
+  t = glfw.get_time()
+  ww, wh = glfw.get_window_size(w)
+  mx, my = glfw.get_cursor_pos(w)
+  local pw, _ = glfw.get_framebuffer_size(w)
+  local ratio = pw/ww
+  canvas:beginFrame(ww, wh, ratio)
+  canvas:clear "#4C4C51"
+  renderDemo(canvas, mx, my, ww, wh, t, blowup)
+  canvas:endFrame()
+  glfw.swap_buffers(w)
+  glfw.poll_events()
 end

@@ -3,4 +3,4 @@
 	url = https://github.com/memononen/nanovg
 [submodule "moonglfw"]
 	path = moonglfw
-	url = https://github.com/stetre/moonglfw
+	url = https://github.com/stetre/moonglfw.git
