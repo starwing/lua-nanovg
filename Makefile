@@ -33,7 +33,9 @@ S_DIR=$(PREFIX)/lib
 
 default : all
 
-all: clean $(SYS) install test
+.PHONY: all
+
+all: clean $(SYS) doc install test
 
 undefined :
 	@echo "I can't guess your platform, please do 'make PLATFORM' where PLATFORM is one of these:"
@@ -53,7 +55,7 @@ install :
 
 test :
 	# Test
-	lua$(LUAVER) test.lua
+	lua$(LUAVER) examples/test.lua
 
 mingw : OS := MINGW
 mingw : CFLAGS += -DLUAVER=$(LUAVER) -D_GLFW_USE_OPENGL -D_GLFW_WIN32 -D_GLFW_WGL -D_GLFW_BUILD_ALL -Iglfw/include $(shell pkg-config --cflags lua$(LUAVER)) -fPIC

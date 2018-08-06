@@ -1,0 +1,12 @@
+
+== Enums and structs
+
+[[CreateFlags]]
+* [small]#*VideoMode* = antialias|stencil_strokes or aa|ss.#
+* [small]#*CompositeOperation* = atop|copy|destination_atop|....#
+* [small]#*BlendFactor* = dst_alpha|dst_color|....#
+* [small]#*ArcDirection* = ccw|cc#
+* [small]#*PathWinding* = ccw|cc|hole|solid#
+* [small]#*TextAlign* = baseline|bottom|center|left|middle|right|top#
+* [small]#*ImageFlags* = flipy|mipmaps|nearest|premulti|repeatx|repeaty#
+* [small]#*ColorName* = aliceblue..|..yellowgreen#

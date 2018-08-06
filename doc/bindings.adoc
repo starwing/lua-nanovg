@@ -1,0 +1,6 @@
+
+== Bindings
+
+The functions list of the nvg module
+
+include::context.adoc[]
