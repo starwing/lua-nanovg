@@ -33,6 +33,11 @@ static int opengl_loaded = 0;
 #define CONTEXT_DELETE nvgDeleteGLES2
 #endif
 
+#define NANOSVG_IMPLEMENTATION
+#include "nanosvg/src/nanosvg.h"
+#define NANOSVGRAST_IMPLEMENTATION
+#include "nanosvg/src/nanosvgrast.h"
+
 LBIND_TYPE(lbT_Context, "NanoVG.Context");
 LBIND_TYPE(lbT_Image,   "NanoVG.Image");
 LBIND_TYPE(lbT_Paint,   "NanoVG.Paint");
@@ -46,7 +51,6 @@ static NVGcolor check_color(lua_State *L, int idx);
 static int test_color(lua_State *L, int idx, NVGcolor *color);
 static int test_paint(lua_State *L, int idx, NVGpaint *paint);
 static int opentype_image(lua_State *L);
-
 
 #define check_context(L, idx) ((NVGcontext*)lbind_check((L),(idx),&lbT_Context))
 #define check_image(L, idx)   ((LNVGimage*)lbind_check((L),(idx),&lbT_Image))
@@ -891,10 +895,45 @@ static int Limage_load(lua_State *L) {
     static lbind_Enum lbE_imageflags =
         LBIND_INITENUM("ImageFlags", image_flags);
     LNVGimage *image;
+    int hasDpiArg = 0;
+    if (lua_gettop(L) == 4) {
+        hasDpiArg = 1;
+    }
     NVGcontext *ctx = check_context(L, 1);
     const char *filename = luaL_checkstring(L, 2);
     int flags = lbind_optmask(L, 3, 0, &lbE_imageflags);
-    int imageid = nvgCreateImage(ctx, filename, flags);
+    float dpi = 96.0f;
+    if (hasDpiArg) {
+        dpi = luaL_checknumber(L, 4);
+    }
+    const char *ext = strrchr(filename, '.');
+    int imageid = -1;
+    if (stricmp(".svg", ext) == 0) {
+        // is SVG
+        NSVGrasterizer *rast = nsvgCreateRasterizer();
+        if (rast == NULL) {
+            fprintf(stderr, "Failed allocating rasterizer\n");
+            return -1;
+        }
+        NSVGimage *vector = nsvgParseFromFile(filename, "px", dpi);
+        if (vector != NULL) {
+            int w = (int)vector->width;
+            int h = (int)vector->height;
+            unsigned char* img = malloc(w * h * 4);
+            if (img == NULL) {
+                fprintf(stderr, "Failed allocating raster image buffer `%s`\n", filename);
+            } else {
+                nsvgRasterize(rast, vector, 0,0,1, img, w, h, w*4);
+                imageid = nvgCreateImageRGBA(ctx, w, h, flags, img);
+            }
+        }
+        if (rast != NULL) {
+            nsvgDeleteRasterizer(rast);
+        }
+    } else {
+        // is not SVG
+        imageid = nvgCreateImage(ctx, filename, flags);
+    }
     if (imageid < 0)
         lbind_argferror(L, 3, "invalid image file: %s", filename);
     image = new_image(L);
