@@ -1,0 +1,41 @@
+
+=== NanoVG.Color
+
+Color creation and manipulation
+
+[[Attributes]]
+* *NanoVG.Color* attributes:
+
+    ** *r* [small]#Reader for the red component.#
+    ** *g* [small]#Reader for the green component.#
+    ** *b* [small]#Reader for the blue component.#
+    ** *a* [small]#Reader for the alpha(opacity) component.#
+
+[[parse]]
+* *parse*(input:Number|String)
+[small]#Tries to parse input to a valid color.#
+
+[[rgb]]
+* color = *rgb*(r,g,b,a)
+[small]#Creates a color with specified components.#
+
+[[rgb8]]
+* color = *rgb8*(r,g,b,a)
+[small]#Creates a color with specified components.#
+
+[[hsl]]
+* color = *hsl*(h,s,l,a)
+[small]#Creates a color with specified components.#
+
+[[lerp]]
+* color = *lerp*(c0,c1,u)
+[small]#Creates a color with specified components.#
+
+[[trans]]
+* trans [small]#TODO:.#
+
+[[torgb]]
+* torgb [small]#TODO:.#
+
+[[torgb8]]
+* torgb8 [small]#TODO:.#

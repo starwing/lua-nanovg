@@ -911,7 +911,7 @@ static int Limage_load(lua_State *L) {
     // defaults
     float ex = 0.0f;
     float ey = 0.0f;
-    if (stricmp(".svg", ext) == 0) {
+    if (lbE_stricmp(".svg", ext, 4) == 0) {
         // is SVG
         NSVGrasterizer *rast = nsvgCreateRasterizer();
         if (rast == NULL) {
