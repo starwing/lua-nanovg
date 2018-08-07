@@ -1,8 +1,8 @@
 package = "nanovg"
-version = "0.1.1-1"
+version = "1.0.0-1"
 source = {
-   url = "https://github.com/starwing/lua-nanovg/archive/0.1.1.tar.gz",
-   dir = "lua-nanovg-0.1.1"
+   url = "https://github.com/starwing/lua-nanovg/archive/1.0.0.tar.gz",
+   dir = "lua-nanovg-1.0.0"
 }
 description = {
    summary = "Lua binding for NanoVG",
@@ -18,7 +18,10 @@ build = {
       windows = {
          modules = {
             nvg = {
-               libraries = { "opengl32" },
+               libraries = {
+                   "opengl32",
+                   "gdi32"
+               },
             }
          }
       }
