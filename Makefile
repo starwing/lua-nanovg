@@ -8,17 +8,31 @@ SYS=$(if $(filter Linux%,$(UNAME)),linux,\
 )))
 
 ifdef MINGW_PREFIX
-MINGW=1
-L_EXT=dll
+	MINGW=1
+	L_EXT=dll
 else
-LINUX=1
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Linux)
+		LINUX=1
+	endif
+	ifeq ($(UNAME_S),Darwin)
+		OSX=1
+	endif
 endif
 
-# Base install directory
+# Linux
 ifdef LINUX
 PREFIX?=/usr/local
 INCDIR=`pkg-config --cflags lua5.3`
 endif
+
+# OSX - Homebrew
+ifdef OSX
+PREFIX?=/usr/local
+INCDIR=`pkg-config --cflags lua5.3`
+endif
+
+# Windows - Mingw/Msys
 ifdef MINGW
 PREFIX?=$(MINGW_PREFIX)
 INCDIR=`pkg-config --cflags lua5.3`

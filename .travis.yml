@@ -1,0 +1,23 @@
+language: c
+
+sudo: false
+
+env:
+  global:
+    - LUAROCKS=3.0.0
+    - LUA=lua5.3
+branches:
+  only:
+    - master
+
+script:
+  - ./scripts/run-tests.sh
+
+after_success:
+  - coveralls -b .. -r .. -i ./src --dump c.report.json
+  - luacov-coveralls -j c.report.json -v
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always

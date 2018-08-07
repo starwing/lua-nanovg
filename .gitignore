@@ -12,6 +12,8 @@ old/*
 *.a
 *.vscode
 # Build results
+.travis/lua-5.*/*
+.travis/build/*
 
 [Dd]ebug/
 [Rr]elease/
@@ -50,6 +52,8 @@ build/
 *.pidb
 *.log
 *.scc
+
+luacov.stats.out
 
 # Visual C++ cache files
 ipch/
