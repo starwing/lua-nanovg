@@ -93,3 +93,247 @@ ctx.fontBlur = number;
 ctx:text()
 ctx:measureText()
 ----
+
+=== NanoVG.Context
+
+Context creation and manipulation
+
+* The *NanoVG.Context* table contains the following version fields: +
+** *_VERSION*: a string describing the NanoVG version
+
+
+[[new]]
+* _inst_ = *new*( )
+[small]#Context constructor.#
+
+[[font]]
+* *font*( )
+[small]#Font setter.#
+
+[[linearGradient]]
+* *linearGradient*(sx, sy, ex, ey, iColor, oColor)
+[small]#Defines a linear gradient paint.#
+
+[[boxGradient]]
+* *boxGradient*(x, y, w, h, r, f, iColor, oColor)
+[small]#Defines a rectangular gradient paint.#
+
+[[radialGradient]]
+* *radialGradient*(cx, cy, inr, outr, iColor, oColor)
+[small]#Defines a radial gradient paint.#
+
+[[clear]]
+* *clear*(color)
+[small]#Clears the context using the specified color { r=0, g=0, b=0, a=0 }.#
+
+[[beginFrame]]
+* *beginFrame*()
+[small]#Starts a frame scope.#
+
+[[cancelFrame]]
+* *cancelFrame*()
+[small]#Cancels a frame scope.#
+
+[[endFrame]]
+* *endFrame*()
+[small]#Flushes a frame scope.#
+
+[[save]]
+* *save*()
+[small]#Saves the context.#
+
+[[restore]]
+* *restore*()
+[small]#Restores the context.#
+
+[[reset]]
+* *reset*()
+[small]#Resets the context.#
+
+[[currentTransform]]
+* a, b, c, d, e, f = *currentTransform*()
+[small]#Getter for the current transformation.#
+
+[[transform]]
+* *transform*(a, b, c, d, e, f)
+[small]#Setter for the current transformation.#
+
+[[translate]]
+* *translate*(x, y)
+[small]#Translate by x horizontally and y vertically.#
+
+[[scale]]
+* *scale*(x, y)
+[small]#Scale with x horizontally and y vertically.#
+
+[[rotate]]
+* *rotate*(angle)
+[small]#Rotate by angle.#
+
+[[skew]]
+* *skew*(x, y)
+[small]#Skew with x horizontally and y vertically.#
+
+[[resetScissor]]
+* *resetScissor*()
+[small]#Resets the scissor.#
+
+[[scissor]]
+* *scissor*(x, y, w, h)
+[small]#Applies the scissor.#
+
+[[intersectScissor]]
+* *intersectScissor*(x, y, w, h)
+[small]#Applies the intersection scissor.#
+
+[[globalCompositeOperation]]
+* *globalCompositeOperation*(enum:CompositeOperation)
+[small]#Sets the composite operation.#
+
+[[globalCompositeBlendFunc]]
+* *globalCompositeBlendFunc*(enum:BlendFactor)
+[small]#Sets the composite blending function operation.#
+
+[[globalCompositeBlendFuncSeparate]]
+* *globalCompositeBlendFuncSeparate*(enum:BlendFactor)
+[small]#Sets the composite blending function operation.#
+
+[[beginPath]]
+* *beginPath*()
+[small]#Starts a new path.#
+
+[[moveTo]]
+* *moveTo*(x, y)
+[small]#Moves the drawing head.#
+
+[[lineTo]]
+* *lineTo*(x, y)
+[small]#Draws a line from the head to the specified coordinates.#
+
+[[quadraticCurveTo]]
+* *quadraticCurveTo*(cx, cy, x, y)
+[small]#Draws a quadratic curve from the head to the specified coordinates.#
+
+[[bezierCurveTo]]
+* *bezierCurveTo*(c1x, c1y, c2x, c2y, x, y)
+[small]#Draws a bezier curve from the head to the specified coordinates.#
+
+[[arcTo]]
+* *arcTo*(x1, y1, x2, y2, radius)
+[small]#Draws an arc from the head to the specified coordinates.#
+
+[[closePath]]
+* *closePath*()
+[small]#Closes the previously opened path.#
+
+[[arc]]
+* *arc*(cx, cy, r, a0, a1, dir:ArcDirection)
+[small]#Draws an arc from the head to the specified coordinates.#
+
+[[rect]]
+* *rect*(x, y, w, h)
+[small]#Draws a rect from the head to the specified coordinates.#
+
+[[roundedRect]]
+* *roundedRect*(x, y, w, h, r1|, r2, r3, r4)
+[small]#Draws a rounded rectangle defined by the coordinates.#
+
+[[ellipse]]
+* *ellipse*(cx, cy, rx, ry)
+[small]#Draws an ellipse defined by the coordinates.#
+
+[[circle]]
+* *circle*(cx, cy, r)
+[small]#Draws a circle defined by the coordinates.#
+
+[[fill]]
+* *fill*()
+[small]#TODO.#
+
+[[stroke]]
+* *stroke*()
+[small]#TODO.#
+
+[[text]]
+* *text*(x, y, text)
+[small]#Draws the text.#
+
+[[textMetrics]]
+* *textMetrics*(ascender, descender, lineHeight)
+[small]#Sets the text metrics.#
+
+[[textBounds]]
+* *textBounds*(string|(x, y|, width))
+[small]#Sets the text bounds.#
+
+[[addFallbackFont]]
+* *addFallbackFont*(font, fallbackFont)
+[small]#Sets an alternate font for the main font.#
+
+[[shapeAntiAlias]]
+* *shapeAntiAlias*(flag)
+[small]#Enable of disable the antialiasing of shapes.#
+
+[[globalAlpha]]
+* *globalAlpha*(a)
+[small]#Sets the global scene alpha opacity.#
+
+[[strokeColor]]
+* *strokeColor*(color:Color)
+[small]#Sets the stroke color.#
+
+[[fillColor]]
+* *fillColor*(color:Color)
+[small]#Sets the fill color.#
+
+[[strokeStyle]]
+* *strokeStyle*(color:Color|paint:Paint)
+[small]#Sets the stroke style using a color or a paint.#
+
+[[fillStyle]]
+* *fillStyle*(color:Color|paint:Paint)
+[small]#Sets the fill style using a color or a paint.#
+
+[[miterLimit]]
+* *miterLimit*(width)
+[small]#Sets the miter width limit.#
+
+[[lineWidth]]
+* *lineWidth*(width)
+[small]#Sets the width of the line.#
+
+[[lineCap]]
+* *lineCap*(type:{butt|round|square})
+[small]#Sets the line cap type.#
+
+[[lineJoin]]
+* *lineJoin*(type:{round|bevel|miter})
+[small]#Sets the line join type.#
+
+[[pathWinding]]
+* *pathWinding*(winding:PathWinding)
+[small]#Sets the path winding.#
+
+[[fontFace]]
+* *fontFace*(face)
+[small]#Sets the font face(family).#
+
+[[fontSize]]
+* *fontSize*(size)
+[small]#Sets the dimensions of the font.#
+
+[[fontBlur]]
+* *fontBlur*(blur)
+[small]#Sets the amount of blur.#
+
+[[textAlign]]
+* *textAlign*(align:Align)
+[small]#Sets the text alignment.#
+
+[[textLetterSpacing]]
+* *textLetterSpacing*(space)
+[small]#Sets the width of the space between letters.#
+
+[[textLineHeight]]
+* *textLineHeight*(height)
+[small]#Sets the text line height.#

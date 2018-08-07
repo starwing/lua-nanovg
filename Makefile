@@ -17,9 +17,11 @@ endif
 # Base install directory
 ifdef LINUX
 PREFIX?=/usr/local
+INCDIR=`pkg-config --cflags lua5.3`
 endif
 ifdef MINGW
 PREFIX?=$(MINGW_PREFIX)
+INCDIR=`pkg-config --cflags lua5.3`
 endif
 
 # Directory where to install Lua modules
@@ -33,9 +35,9 @@ S_DIR=$(PREFIX)/lib
 
 default : all
 
-.PHONY: all
+.PHONY: moonglfw test
 
-all: clean $(SYS) doc install test
+all: clean moonglfw $(SYS) doc
 
 undefined :
 	@echo "I can't guess your platform, please do 'make PLATFORM' where PLATFORM is one of these:"
@@ -46,10 +48,16 @@ clean :
 	@rm -fr *.a
 	@rm -fr *.o
 	@echo "Cleaned build files"
+	@cd moonglfw && $(MAKE) clean
+
+moonglfw :
+	@echo "Building moonglfw dependency in $(PREFIX)"
+	@cd moonglfw && INCDIR=`pkg-config --cflags lua5.3` $(MAKE) clean && cd .
+	@cd moonglfw && INCDIR=`pkg-config --cflags lua5.3` $(MAKE) && cd .
 
 install :
 	@echo "Installing moonglfw dependency in $(PREFIX)"
-	@cd moonglfw && PREFIX=$(PREFIX) make -f Makefile install && cd .
+	@cd moonglfw && PREFIX=$(PREFIX) $(MAKE) -f Makefile install && cd .
 	@echo "Installing nvg dependency in $(C_DIR)"
 	@cp -f nvg.$(L_EXT) $(C_DIR)
 
@@ -68,7 +76,7 @@ mingw :
 
 linux : OS := LINUX
 linux : CFLAGS += -DLUAVER=$(LUAVER) -D_GLFW_USE_OPENGL -D_GLFW_X11 -D_GLFW_BUILD_ALL -Iglfw/include $(shell pkg-config --cflags lua$(LUAVER)) -fPIC
-linux : LDFLAGS += $(shell pkg-config --libs lua$(LUAVER)) $(LDFLAGS)
+linux : LDFLAGS += $(shell pkg-config --libs lua$(LUAVER))
 linux :
 	# NanoVG
 	gcc -c -O3 $(CFLAGS) nanovg/src/nanovg.c

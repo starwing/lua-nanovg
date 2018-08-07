@@ -1,0 +1,60 @@
+
+=== NanoVG.Image
+
+Image creation and manipulation
+
+[[Attributes]]
+* *NanoVG.image* attributes:
+
+    ** *ox* [small]#Reader for ox coordinate.#
+    ** *oy* [small]#Reader for oy coordinate.#
+    ** *ex* [small]#Reader for ex coordinate.#
+    ** *ey* [small]#Reader for ey coordinate.#
+    ** *angle* [small]#Reader for angle coordinate.#
+    ** *alpha* [small]#Reader for alpha property.#
+    ** *image* [small]#Reader for image pointer.#
+    ** *repeat* [small]#Flag if image is to be repeated.#
+
+[[load]]
+* *load*(path, flags:ImageFlags)
+[small]#Creates and loads an image from specified path.#
+
+[[data]]
+* *data*(data, flags:ImageFlags)
+[small]#Creates and loads an image from data.#
+
+[[rgba]]
+* *rgba*(w, h, flags:ImageFlags, data:string)
+[small]#Creates and loads a rgba image from data.#
+
+[[update]]
+* *update*(data:string)
+[small]#Updates image with the bytes specified by data.#
+
+[[size]]
+* w, h = *size*()
+[small]#Reads the image size.#
+
+[[extent]]
+* *extent*(ox, oy, ex, ey)
+[small]#Sets the image extent.#
+
+[[width]]
+* *width*()
+[small]#Reads the image width.#
+
+[[height]]
+* *height*()
+[small]#Reads the image height.#
+
+[[repeat]]
+* *repeat*()
+[small]#TODO:.#
+
+[[angle]]
+* *angle*()
+[small]#TODO:.#
+
+[[alpha]]
+* *alpha*()
+[small]#TODO:.#

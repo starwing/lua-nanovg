@@ -4,3 +4,6 @@
 The functions list of the nvg module
 
 include::context.adoc[]
+include::color.adoc[]
+include::image.adoc[]
+

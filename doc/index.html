@@ -783,7 +783,13 @@ p.tableblock.header { color: #6d6e71; }
 <li><a href="#see-also">See also</a></li>
 </ul>
 </li>
-<li><a href="#_bindings">Bindings</a></li>
+<li><a href="#_bindings">Bindings</a>
+<ul class="sectlevel2">
+<li><a href="#_nanovg_context">NanoVG.Context</a></li>
+<li><a href="#_nanovg_color">NanoVG.Color</a></li>
+<li><a href="#_nanovg_image">NanoVG.Image</a></li>
+</ul>
+</li>
 <li><a href="#_enums_and_structs">Enums and structs</a></li>
 </ul>
 </div>
@@ -968,6 +974,717 @@ same with HTML5 canvas.</p>
  <span class="tok-n">ctx</span><span class="tok-p">:</span><span class="tok-n">measureText</span><span class="tok-p">()</span></code></pre>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_nanovg_context">NanoVG.Context</h3>
+<div class="paragraph">
+<p>Context creation and manipulation</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <strong>NanoVG.Context</strong> table contains the following version fields:<br></p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>_VERSION</strong>: a string describing the NanoVG version</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div id="new" class="ulist">
+<ul>
+<li>
+<p><em>inst</em> = <strong>new</strong>( )
+<span class="small">Context constructor.</span></p>
+</li>
+</ul>
+</div>
+<div id="font" class="ulist">
+<ul>
+<li>
+<p><strong>font</strong>( )
+<span class="small">Font setter.</span></p>
+</li>
+</ul>
+</div>
+<div id="linearGradient" class="ulist">
+<ul>
+<li>
+<p><strong>linearGradient</strong>(sx, sy, ex, ey, iColor, oColor)
+<span class="small">Defines a linear gradient paint.</span></p>
+</li>
+</ul>
+</div>
+<div id="boxGradient" class="ulist">
+<ul>
+<li>
+<p><strong>boxGradient</strong>(x, y, w, h, r, f, iColor, oColor)
+<span class="small">Defines a rectangular gradient paint.</span></p>
+</li>
+</ul>
+</div>
+<div id="radialGradient" class="ulist">
+<ul>
+<li>
+<p><strong>radialGradient</strong>(cx, cy, inr, outr, iColor, oColor)
+<span class="small">Defines a radial gradient paint.</span></p>
+</li>
+</ul>
+</div>
+<div id="clear" class="ulist">
+<ul>
+<li>
+<p><strong>clear</strong>(color)
+<span class="small">Clears the context using the specified color { r=0, g=0, b=0, a=0 }.</span></p>
+</li>
+</ul>
+</div>
+<div id="beginFrame" class="ulist">
+<ul>
+<li>
+<p><strong>beginFrame</strong>()
+<span class="small">Starts a frame scope.</span></p>
+</li>
+</ul>
+</div>
+<div id="cancelFrame" class="ulist">
+<ul>
+<li>
+<p><strong>cancelFrame</strong>()
+<span class="small">Cancels a frame scope.</span></p>
+</li>
+</ul>
+</div>
+<div id="endFrame" class="ulist">
+<ul>
+<li>
+<p><strong>endFrame</strong>()
+<span class="small">Flushes a frame scope.</span></p>
+</li>
+</ul>
+</div>
+<div id="save" class="ulist">
+<ul>
+<li>
+<p><strong>save</strong>()
+<span class="small">Saves the context.</span></p>
+</li>
+</ul>
+</div>
+<div id="restore" class="ulist">
+<ul>
+<li>
+<p><strong>restore</strong>()
+<span class="small">Restores the context.</span></p>
+</li>
+</ul>
+</div>
+<div id="reset" class="ulist">
+<ul>
+<li>
+<p><strong>reset</strong>()
+<span class="small">Resets the context.</span></p>
+</li>
+</ul>
+</div>
+<div id="currentTransform" class="ulist">
+<ul>
+<li>
+<p>a, b, c, d, e, f = <strong>currentTransform</strong>()
+<span class="small">Getter for the current transformation.</span></p>
+</li>
+</ul>
+</div>
+<div id="transform" class="ulist">
+<ul>
+<li>
+<p><strong>transform</strong>(a, b, c, d, e, f)
+<span class="small">Setter for the current transformation.</span></p>
+</li>
+</ul>
+</div>
+<div id="translate" class="ulist">
+<ul>
+<li>
+<p><strong>translate</strong>(x, y)
+<span class="small">Translate by x horizontally and y vertically.</span></p>
+</li>
+</ul>
+</div>
+<div id="scale" class="ulist">
+<ul>
+<li>
+<p><strong>scale</strong>(x, y)
+<span class="small">Scale with x horizontally and y vertically.</span></p>
+</li>
+</ul>
+</div>
+<div id="rotate" class="ulist">
+<ul>
+<li>
+<p><strong>rotate</strong>(angle)
+<span class="small">Rotate by angle.</span></p>
+</li>
+</ul>
+</div>
+<div id="skew" class="ulist">
+<ul>
+<li>
+<p><strong>skew</strong>(x, y)
+<span class="small">Skew with x horizontally and y vertically.</span></p>
+</li>
+</ul>
+</div>
+<div id="resetScissor" class="ulist">
+<ul>
+<li>
+<p><strong>resetScissor</strong>()
+<span class="small">Resets the scissor.</span></p>
+</li>
+</ul>
+</div>
+<div id="scissor" class="ulist">
+<ul>
+<li>
+<p><strong>scissor</strong>(x, y, w, h)
+<span class="small">Applies the scissor.</span></p>
+</li>
+</ul>
+</div>
+<div id="intersectScissor" class="ulist">
+<ul>
+<li>
+<p><strong>intersectScissor</strong>(x, y, w, h)
+<span class="small">Applies the intersection scissor.</span></p>
+</li>
+</ul>
+</div>
+<div id="globalCompositeOperation" class="ulist">
+<ul>
+<li>
+<p><strong>globalCompositeOperation</strong>(enum:CompositeOperation)
+<span class="small">Sets the composite operation.</span></p>
+</li>
+</ul>
+</div>
+<div id="globalCompositeBlendFunc" class="ulist">
+<ul>
+<li>
+<p><strong>globalCompositeBlendFunc</strong>(enum:BlendFactor)
+<span class="small">Sets the composite blending function operation.</span></p>
+</li>
+</ul>
+</div>
+<div id="globalCompositeBlendFuncSeparate" class="ulist">
+<ul>
+<li>
+<p><strong>globalCompositeBlendFuncSeparate</strong>(enum:BlendFactor)
+<span class="small">Sets the composite blending function operation.</span></p>
+</li>
+</ul>
+</div>
+<div id="beginPath" class="ulist">
+<ul>
+<li>
+<p><strong>beginPath</strong>()
+<span class="small">Starts a new path.</span></p>
+</li>
+</ul>
+</div>
+<div id="moveTo" class="ulist">
+<ul>
+<li>
+<p><strong>moveTo</strong>(x, y)
+<span class="small">Moves the drawing head.</span></p>
+</li>
+</ul>
+</div>
+<div id="lineTo" class="ulist">
+<ul>
+<li>
+<p><strong>lineTo</strong>(x, y)
+<span class="small">Draws a line from the head to the specified coordinates.</span></p>
+</li>
+</ul>
+</div>
+<div id="quadraticCurveTo" class="ulist">
+<ul>
+<li>
+<p><strong>quadraticCurveTo</strong>(cx, cy, x, y)
+<span class="small">Draws a quadratic curve from the head to the specified coordinates.</span></p>
+</li>
+</ul>
+</div>
+<div id="bezierCurveTo" class="ulist">
+<ul>
+<li>
+<p><strong>bezierCurveTo</strong>(c1x, c1y, c2x, c2y, x, y)
+<span class="small">Draws a bezier curve from the head to the specified coordinates.</span></p>
+</li>
+</ul>
+</div>
+<div id="arcTo" class="ulist">
+<ul>
+<li>
+<p><strong>arcTo</strong>(x1, y1, x2, y2, radius)
+<span class="small">Draws an arc from the head to the specified coordinates.</span></p>
+</li>
+</ul>
+</div>
+<div id="closePath" class="ulist">
+<ul>
+<li>
+<p><strong>closePath</strong>()
+<span class="small">Closes the previously opened path.</span></p>
+</li>
+</ul>
+</div>
+<div id="arc" class="ulist">
+<ul>
+<li>
+<p><strong>arc</strong>(cx, cy, r, a0, a1, dir:ArcDirection)
+<span class="small">Draws an arc from the head to the specified coordinates.</span></p>
+</li>
+</ul>
+</div>
+<div id="rect" class="ulist">
+<ul>
+<li>
+<p><strong>rect</strong>(x, y, w, h)
+<span class="small">Draws a rect from the head to the specified coordinates.</span></p>
+</li>
+</ul>
+</div>
+<div id="roundedRect" class="ulist">
+<ul>
+<li>
+<p><strong>roundedRect</strong>(x, y, w, h, r1|, r2, r3, r4)
+<span class="small">Draws a rounded rectangle defined by the coordinates.</span></p>
+</li>
+</ul>
+</div>
+<div id="ellipse" class="ulist">
+<ul>
+<li>
+<p><strong>ellipse</strong>(cx, cy, rx, ry)
+<span class="small">Draws an ellipse defined by the coordinates.</span></p>
+</li>
+</ul>
+</div>
+<div id="circle" class="ulist">
+<ul>
+<li>
+<p><strong>circle</strong>(cx, cy, r)
+<span class="small">Draws a circle defined by the coordinates.</span></p>
+</li>
+</ul>
+</div>
+<div id="fill" class="ulist">
+<ul>
+<li>
+<p><strong>fill</strong>()
+<span class="small">TODO.</span></p>
+</li>
+</ul>
+</div>
+<div id="stroke" class="ulist">
+<ul>
+<li>
+<p><strong>stroke</strong>()
+<span class="small">TODO.</span></p>
+</li>
+</ul>
+</div>
+<div id="text" class="ulist">
+<ul>
+<li>
+<p><strong>text</strong>(x, y, text)
+<span class="small">Draws the text.</span></p>
+</li>
+</ul>
+</div>
+<div id="textMetrics" class="ulist">
+<ul>
+<li>
+<p><strong>textMetrics</strong>(ascender, descender, lineHeight)
+<span class="small">Sets the text metrics.</span></p>
+</li>
+</ul>
+</div>
+<div id="textBounds" class="ulist">
+<ul>
+<li>
+<p><strong>textBounds</strong>(string|(x, y|, width))
+<span class="small">Sets the text bounds.</span></p>
+</li>
+</ul>
+</div>
+<div id="addFallbackFont" class="ulist">
+<ul>
+<li>
+<p><strong>addFallbackFont</strong>(font, fallbackFont)
+<span class="small">Sets an alternate font for the main font.</span></p>
+</li>
+</ul>
+</div>
+<div id="shapeAntiAlias" class="ulist">
+<ul>
+<li>
+<p><strong>shapeAntiAlias</strong>(flag)
+<span class="small">Enable of disable the antialiasing of shapes.</span></p>
+</li>
+</ul>
+</div>
+<div id="globalAlpha" class="ulist">
+<ul>
+<li>
+<p><strong>globalAlpha</strong>(a)
+<span class="small">Sets the global scene alpha opacity.</span></p>
+</li>
+</ul>
+</div>
+<div id="strokeColor" class="ulist">
+<ul>
+<li>
+<p><strong>strokeColor</strong>(color:Color)
+<span class="small">Sets the stroke color.</span></p>
+</li>
+</ul>
+</div>
+<div id="fillColor" class="ulist">
+<ul>
+<li>
+<p><strong>fillColor</strong>(color:Color)
+<span class="small">Sets the fill color.</span></p>
+</li>
+</ul>
+</div>
+<div id="strokeStyle" class="ulist">
+<ul>
+<li>
+<p><strong>strokeStyle</strong>(color:Color|paint:Paint)
+<span class="small">Sets the stroke style using a color or a paint.</span></p>
+</li>
+</ul>
+</div>
+<div id="fillStyle" class="ulist">
+<ul>
+<li>
+<p><strong>fillStyle</strong>(color:Color|paint:Paint)
+<span class="small">Sets the fill style using a color or a paint.</span></p>
+</li>
+</ul>
+</div>
+<div id="miterLimit" class="ulist">
+<ul>
+<li>
+<p><strong>miterLimit</strong>(width)
+<span class="small">Sets the miter width limit.</span></p>
+</li>
+</ul>
+</div>
+<div id="lineWidth" class="ulist">
+<ul>
+<li>
+<p><strong>lineWidth</strong>(width)
+<span class="small">Sets the width of the line.</span></p>
+</li>
+</ul>
+</div>
+<div id="lineCap" class="ulist">
+<ul>
+<li>
+<p><strong>lineCap</strong>(type:{butt|round|square})
+<span class="small">Sets the line cap type.</span></p>
+</li>
+</ul>
+</div>
+<div id="lineJoin" class="ulist">
+<ul>
+<li>
+<p><strong>lineJoin</strong>(type:{round|bevel|miter})
+<span class="small">Sets the line join type.</span></p>
+</li>
+</ul>
+</div>
+<div id="pathWinding" class="ulist">
+<ul>
+<li>
+<p><strong>pathWinding</strong>(winding:PathWinding)
+<span class="small">Sets the path winding.</span></p>
+</li>
+</ul>
+</div>
+<div id="fontFace" class="ulist">
+<ul>
+<li>
+<p><strong>fontFace</strong>(face)
+<span class="small">Sets the font face(family).</span></p>
+</li>
+</ul>
+</div>
+<div id="fontSize" class="ulist">
+<ul>
+<li>
+<p><strong>fontSize</strong>(size)
+<span class="small">Sets the dimensions of the font.</span></p>
+</li>
+</ul>
+</div>
+<div id="fontBlur" class="ulist">
+<ul>
+<li>
+<p><strong>fontBlur</strong>(blur)
+<span class="small">Sets the amount of blur.</span></p>
+</li>
+</ul>
+</div>
+<div id="textAlign" class="ulist">
+<ul>
+<li>
+<p><strong>textAlign</strong>(align:Align)
+<span class="small">Sets the text alignment.</span></p>
+</li>
+</ul>
+</div>
+<div id="textLetterSpacing" class="ulist">
+<ul>
+<li>
+<p><strong>textLetterSpacing</strong>(space)
+<span class="small">Sets the width of the space between letters.</span></p>
+</li>
+</ul>
+</div>
+<div id="textLineHeight" class="ulist">
+<ul>
+<li>
+<p><strong>textLineHeight</strong>(height)
+<span class="small">Sets the text line height.</span></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_nanovg_color">NanoVG.Color</h3>
+<div class="paragraph">
+<p>Color creation and manipulation</p>
+</div>
+<div id="Attributes" class="ulist">
+<ul>
+<li>
+<p><strong>NanoVG.Color</strong> attributes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>r</strong> <span class="small">Reader for the red component.</span></p>
+</li>
+<li>
+<p><strong>g</strong> <span class="small">Reader for the green component.</span></p>
+</li>
+<li>
+<p><strong>b</strong> <span class="small">Reader for the blue component.</span></p>
+</li>
+<li>
+<p><strong>a</strong> <span class="small">Reader for the alpha(opacity) component.</span></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div id="parse" class="ulist">
+<ul>
+<li>
+<p><strong>parse</strong>(input:Number|String)
+<span class="small">Tries to parse input to a valid color.</span></p>
+</li>
+</ul>
+</div>
+<div id="rgb" class="ulist">
+<ul>
+<li>
+<p>color = <strong>rgb</strong>(r,g,b,a)
+<span class="small">Creates a color with specified components.</span></p>
+</li>
+</ul>
+</div>
+<div id="rgb8" class="ulist">
+<ul>
+<li>
+<p>color = <strong>rgb8</strong>(r,g,b,a)
+<span class="small">Creates a color with specified components.</span></p>
+</li>
+</ul>
+</div>
+<div id="hsl" class="ulist">
+<ul>
+<li>
+<p>color = <strong>hsl</strong>(h,s,l,a)
+<span class="small">Creates a color with specified components.</span></p>
+</li>
+</ul>
+</div>
+<div id="lerp" class="ulist">
+<ul>
+<li>
+<p>color = <strong>lerp</strong>(c0,c1,u)
+<span class="small">Creates a color with specified components.</span></p>
+</li>
+</ul>
+</div>
+<div id="trans" class="ulist">
+<ul>
+<li>
+<p>trans <span class="small">TODO:.</span></p>
+</li>
+</ul>
+</div>
+<div id="torgb" class="ulist">
+<ul>
+<li>
+<p>torgb <span class="small">TODO:.</span></p>
+</li>
+</ul>
+</div>
+<div id="torgb8" class="ulist">
+<ul>
+<li>
+<p>torgb8 <span class="small">TODO:.</span></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_nanovg_image">NanoVG.Image</h3>
+<div class="paragraph">
+<p>Image creation and manipulation</p>
+</div>
+<div id="Attributes" class="ulist">
+<ul>
+<li>
+<p><strong>NanoVG.image</strong> attributes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>ox</strong> <span class="small">Reader for ox coordinate.</span></p>
+</li>
+<li>
+<p><strong>oy</strong> <span class="small">Reader for oy coordinate.</span></p>
+</li>
+<li>
+<p><strong>ex</strong> <span class="small">Reader for ex coordinate.</span></p>
+</li>
+<li>
+<p><strong>ey</strong> <span class="small">Reader for ey coordinate.</span></p>
+</li>
+<li>
+<p><strong>angle</strong> <span class="small">Reader for angle coordinate.</span></p>
+</li>
+<li>
+<p><strong>alpha</strong> <span class="small">Reader for alpha property.</span></p>
+</li>
+<li>
+<p><strong>image</strong> <span class="small">Reader for image pointer.</span></p>
+</li>
+<li>
+<p><strong>repeat</strong> <span class="small">Flag if image is to be repeated.</span></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div id="load" class="ulist">
+<ul>
+<li>
+<p><strong>load</strong>(path, flags:ImageFlags)
+<span class="small">Creates and loads an image from specified path.</span></p>
+</li>
+</ul>
+</div>
+<div id="data" class="ulist">
+<ul>
+<li>
+<p><strong>data</strong>(data, flags:ImageFlags)
+<span class="small">Creates and loads an image from data.</span></p>
+</li>
+</ul>
+</div>
+<div id="rgba" class="ulist">
+<ul>
+<li>
+<p><strong>rgba</strong>(w, h, flags:ImageFlags, data:string)
+<span class="small">Creates and loads a rgba image from data.</span></p>
+</li>
+</ul>
+</div>
+<div id="update" class="ulist">
+<ul>
+<li>
+<p><strong>update</strong>(data:string)
+<span class="small">Updates image with the bytes specified by data.</span></p>
+</li>
+</ul>
+</div>
+<div id="size" class="ulist">
+<ul>
+<li>
+<p>w, h = <strong>size</strong>()
+<span class="small">Reads the image size.</span></p>
+</li>
+</ul>
+</div>
+<div id="extent" class="ulist">
+<ul>
+<li>
+<p><strong>extent</strong>(ox, oy, ex, ey)
+<span class="small">Sets the image extent.</span></p>
+</li>
+</ul>
+</div>
+<div id="width" class="ulist">
+<ul>
+<li>
+<p><strong>width</strong>()
+<span class="small">Reads the image width.</span></p>
+</li>
+</ul>
+</div>
+<div id="height" class="ulist">
+<ul>
+<li>
+<p><strong>height</strong>()
+<span class="small">Reads the image height.</span></p>
+</li>
+</ul>
+</div>
+<div id="repeat" class="ulist">
+<ul>
+<li>
+<p><strong>repeat</strong>()
+<span class="small">TODO:.</span></p>
+</li>
+</ul>
+</div>
+<div id="angle" class="ulist">
+<ul>
+<li>
+<p><strong>angle</strong>()
+<span class="small">TODO:.</span></p>
+</li>
+</ul>
+</div>
+<div id="alpha" class="ulist">
+<ul>
+<li>
+<p><strong>alpha</strong>()
+<span class="small">TODO:.</span></p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -976,28 +1693,618 @@ same with HTML5 canvas.</p>
 <div id="CreateFlags" class="ulist">
 <ul>
 <li>
-<p><span class="small"><strong>VideoMode</strong> = antialias|stencil_strokes or aa|ss.</span></p>
+<p><strong>CreateFlags</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>antialias</p>
 </li>
 <li>
-<p><span class="small"><strong>CompositeOperation</strong> = atop|copy|destination_atop|&#8230;&#8203;.</span></p>
+<p>stencil_strokes</p>
 </li>
 <li>
-<p><span class="small"><strong>BlendFactor</strong> = dst_alpha|dst_color|&#8230;&#8203;.</span></p>
+<p>aa</p>
 </li>
 <li>
-<p><span class="small"><strong>ArcDirection</strong> = ccw|cc</span></p>
+<p>ss</p>
+</li>
+</ul>
+</div>
 </li>
 <li>
-<p><span class="small"><strong>PathWinding</strong> = ccw|cc|hole|solid</span></p>
+<p><strong>CompositeOperation</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>atop</p>
 </li>
 <li>
-<p><span class="small"><strong>TextAlign</strong> = baseline|bottom|center|left|middle|right|top</span></p>
+<p>copy</p>
 </li>
 <li>
-<p><span class="small"><strong>ImageFlags</strong> = flipy|mipmaps|nearest|premulti|repeatx|repeaty</span></p>
+<p>destination_atop</p>
 </li>
 <li>
-<p><span class="small"><strong>ColorName</strong> = aliceblue..|..yellowgreen</span></p>
+<p>destination_in</p>
+</li>
+<li>
+<p>destination_out</p>
+</li>
+<li>
+<p>destination_over</p>
+</li>
+<li>
+<p>ligther</p>
+</li>
+<li>
+<p>source_in</p>
+</li>
+<li>
+<p>source_out</p>
+</li>
+<li>
+<p>xor</p>
+</li>
+<li>
+<p>source_over</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>BlendFactor</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>dst_alpha</p>
+</li>
+<li>
+<p>dst_color</p>
+</li>
+<li>
+<p>one</p>
+</li>
+<li>
+<p>one_minus_dst_alpha</p>
+</li>
+<li>
+<p>one_minus_dst_color</p>
+</li>
+<li>
+<p>one_minus_src_alpha</p>
+</li>
+<li>
+<p>one_minus_src_color</p>
+</li>
+<li>
+<p>src_alpha</p>
+</li>
+<li>
+<p>src_alpha_saturate</p>
+</li>
+<li>
+<p>src_color</p>
+</li>
+<li>
+<p>zero</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>ArcDirection</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>ccw</p>
+</li>
+<li>
+<p>cc#</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>PathWinding</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>ccw</p>
+</li>
+<li>
+<p>cc</p>
+</li>
+<li>
+<p>hole</p>
+</li>
+<li>
+<p>solid</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Align</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>baseline</p>
+</li>
+<li>
+<p>bottom</p>
+</li>
+<li>
+<p>center</p>
+</li>
+<li>
+<p>left</p>
+</li>
+<li>
+<p>middle</p>
+</li>
+<li>
+<p>right</p>
+</li>
+<li>
+<p>top</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>ImageFlags</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>flipy</p>
+</li>
+<li>
+<p>mipmaps</p>
+</li>
+<li>
+<p>nearest</p>
+</li>
+<li>
+<p>premulti</p>
+</li>
+<li>
+<p>repeatx</p>
+</li>
+<li>
+<p>repeaty</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>ColorName</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>aliceblue</p>
+</li>
+<li>
+<p>antiquewhite</p>
+</li>
+<li>
+<p>aqua</p>
+</li>
+<li>
+<p>aquamarine</p>
+</li>
+<li>
+<p>azure</p>
+</li>
+<li>
+<p>beige</p>
+</li>
+<li>
+<p>bisque</p>
+</li>
+<li>
+<p>black</p>
+</li>
+<li>
+<p>blanchedalmond</p>
+</li>
+<li>
+<p>blue</p>
+</li>
+<li>
+<p>blueviolet</p>
+</li>
+<li>
+<p>brown</p>
+</li>
+<li>
+<p>burlywood</p>
+</li>
+<li>
+<p>cadetblue</p>
+</li>
+<li>
+<p>chartreuse</p>
+</li>
+<li>
+<p>chocolate</p>
+</li>
+<li>
+<p>coral</p>
+</li>
+<li>
+<p>cornflowerblue</p>
+</li>
+<li>
+<p>cornsilk</p>
+</li>
+<li>
+<p>crimson</p>
+</li>
+<li>
+<p>cyan</p>
+</li>
+<li>
+<p>darkblue</p>
+</li>
+<li>
+<p>darkcyan</p>
+</li>
+<li>
+<p>darkgoldenrod</p>
+</li>
+<li>
+<p>darkgray</p>
+</li>
+<li>
+<p>darkgreen</p>
+</li>
+<li>
+<p>darkkhaki</p>
+</li>
+<li>
+<p>darkmagenta</p>
+</li>
+<li>
+<p>darkolivegreen</p>
+</li>
+<li>
+<p>darkorange</p>
+</li>
+<li>
+<p>darkorchid</p>
+</li>
+<li>
+<p>darkred</p>
+</li>
+<li>
+<p>darksalmon</p>
+</li>
+<li>
+<p>darkseagreen</p>
+</li>
+<li>
+<p>darkslateblue</p>
+</li>
+<li>
+<p>darkslategray</p>
+</li>
+<li>
+<p>darkturquoise</p>
+</li>
+<li>
+<p>darkviolet</p>
+</li>
+<li>
+<p>deeppink</p>
+</li>
+<li>
+<p>deepskyblue</p>
+</li>
+<li>
+<p>dimgray</p>
+</li>
+<li>
+<p>dodgerblue</p>
+</li>
+<li>
+<p>firebrick</p>
+</li>
+<li>
+<p>floralwhite</p>
+</li>
+<li>
+<p>forestgreen</p>
+</li>
+<li>
+<p>fuchsia</p>
+</li>
+<li>
+<p>gainsboro</p>
+</li>
+<li>
+<p>ghostwhite</p>
+</li>
+<li>
+<p>gold</p>
+</li>
+<li>
+<p>goldenrod</p>
+</li>
+<li>
+<p>gray</p>
+</li>
+<li>
+<p>green</p>
+</li>
+<li>
+<p>greenyellow</p>
+</li>
+<li>
+<p>honeydew</p>
+</li>
+<li>
+<p>hotpink</p>
+</li>
+<li>
+<p>indianred</p>
+</li>
+<li>
+<p>indigo</p>
+</li>
+<li>
+<p>ivory</p>
+</li>
+<li>
+<p>khaki</p>
+</li>
+<li>
+<p>lavender</p>
+</li>
+<li>
+<p>lavenderblush</p>
+</li>
+<li>
+<p>lawngreen</p>
+</li>
+<li>
+<p>lemonchiffon</p>
+</li>
+<li>
+<p>lightblue</p>
+</li>
+<li>
+<p>lightcoral</p>
+</li>
+<li>
+<p>lightcyan</p>
+</li>
+<li>
+<p>lightgoldenrodYellow</p>
+</li>
+<li>
+<p>lightgray</p>
+</li>
+<li>
+<p>lightgreen</p>
+</li>
+<li>
+<p>lightpink</p>
+</li>
+<li>
+<p>lightsalmon</p>
+</li>
+<li>
+<p>lightseagreen</p>
+</li>
+<li>
+<p>lightskyblue</p>
+</li>
+<li>
+<p>lightslategray</p>
+</li>
+<li>
+<p>lightsteelblue</p>
+</li>
+<li>
+<p>lightyellow</p>
+</li>
+<li>
+<p>lime</p>
+</li>
+<li>
+<p>limegreen</p>
+</li>
+<li>
+<p>linen</p>
+</li>
+<li>
+<p>magenta</p>
+</li>
+<li>
+<p>maroon</p>
+</li>
+<li>
+<p>mediumaquamarine</p>
+</li>
+<li>
+<p>mediumblue</p>
+</li>
+<li>
+<p>mediumorchid</p>
+</li>
+<li>
+<p>mediumpurple</p>
+</li>
+<li>
+<p>mediumseagreen</p>
+</li>
+<li>
+<p>mediumslateblue</p>
+</li>
+<li>
+<p>mediumspringgreen</p>
+</li>
+<li>
+<p>mediumturquoise</p>
+</li>
+<li>
+<p>mediumvioletred</p>
+</li>
+<li>
+<p>midnightblue</p>
+</li>
+<li>
+<p>mintcream</p>
+</li>
+<li>
+<p>mistyrose</p>
+</li>
+<li>
+<p>moccasin</p>
+</li>
+<li>
+<p>navajowhite</p>
+</li>
+<li>
+<p>navy</p>
+</li>
+<li>
+<p>oldlace</p>
+</li>
+<li>
+<p>olive</p>
+</li>
+<li>
+<p>olivedrab</p>
+</li>
+<li>
+<p>orange</p>
+</li>
+<li>
+<p>orangered</p>
+</li>
+<li>
+<p>orchid</p>
+</li>
+<li>
+<p>palegoldenrod</p>
+</li>
+<li>
+<p>palegreen</p>
+</li>
+<li>
+<p>paleturquoise</p>
+</li>
+<li>
+<p>palevioletred</p>
+</li>
+<li>
+<p>papayawhip</p>
+</li>
+<li>
+<p>peachpuff</p>
+</li>
+<li>
+<p>peru</p>
+</li>
+<li>
+<p>pink</p>
+</li>
+<li>
+<p>plum</p>
+</li>
+<li>
+<p>powderblue</p>
+</li>
+<li>
+<p>purple</p>
+</li>
+<li>
+<p>red</p>
+</li>
+<li>
+<p>rosybrown</p>
+</li>
+<li>
+<p>royalblue</p>
+</li>
+<li>
+<p>saddlebrown</p>
+</li>
+<li>
+<p>salmon</p>
+</li>
+<li>
+<p>sandybrown</p>
+</li>
+<li>
+<p>seagreen</p>
+</li>
+<li>
+<p>seashell</p>
+</li>
+<li>
+<p>sienna</p>
+</li>
+<li>
+<p>silver</p>
+</li>
+<li>
+<p>skyblue</p>
+</li>
+<li>
+<p>slateblue</p>
+</li>
+<li>
+<p>slategray</p>
+</li>
+<li>
+<p>snow</p>
+</li>
+<li>
+<p>springgreen</p>
+</li>
+<li>
+<p>steelblue</p>
+</li>
+<li>
+<p>tan</p>
+</li>
+<li>
+<p>teal</p>
+</li>
+<li>
+<p>thistle</p>
+</li>
+<li>
+<p>tomato</p>
+</li>
+<li>
+<p>transparent</p>
+</li>
+<li>
+<p>turquoise</p>
+</li>
+<li>
+<p>violet</p>
+</li>
+<li>
+<p>wheat</p>
+</li>
+<li>
+<p>white</p>
+</li>
+<li>
+<p>whitesmoke</p>
+</li>
+<li>
+<p>yellow</p>
+</li>
+<li>
+<p>yellowgreen</p>
+</li>
+</ul>
+</div>
 </li>
 </ul>
 </div>
@@ -1013,7 +2320,7 @@ same with HTML5 canvas.</p>
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Last updated 2018-08-06 17:32:07 Romance Daylight Time
+Last updated 2018-08-07 10:03:56 Romance Daylight Time
 </div>
 </div>
 </body>
