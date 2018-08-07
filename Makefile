@@ -54,7 +54,7 @@ moonglfw :
 	@echo "Building moonglfw dependency in $(PREFIX)"
 	@cd moonglfw && INCDIR=`pkg-config --cflags lua5.3` $(MAKE) clean && cd .
 	@cd moonglfw && INCDIR=`pkg-config --cflags lua5.3` $(MAKE) && cd .
-	@cp moonglfw/src/moonglfw.so moonglfw.so
+	@cp moonglfw/src/moonglfw.$(L_EXT) moonglfw.$(L_EXT)
 
 install :
 	@echo "Installing moonglfw dependency in $(PREFIX)"
