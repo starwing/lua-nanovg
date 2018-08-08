@@ -1,23 +1,32 @@
 language: c
-
-sudo: false
-
+os:
+  - linux
+sudo: true
+git:
+  submodules: true
 env:
   global:
     - LUAROCKS=3.0.0
-    - LUA=lua5.3
+    - LUA=5.3
 branches:
   only:
     - master
-
+before_install:
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
 script:
-  - ./scripts/run-tests.sh
-
+  - bash ./scripts/setup_env.sh
+  - bash ./scripts/setup_dep.sh
+  - bash ./scripts/run-tests.sh
 after_success:
   - coveralls -b .. -r .. -i ./src --dump c.report.json
   - luacov-coveralls -j c.report.json -v
-
 notifications:
   email:
     on_success: change
     on_failure: always
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      sudo: required
