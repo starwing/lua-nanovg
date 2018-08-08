@@ -15,8 +15,8 @@ before_install:
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
 script:
-  - bash ./scripts/setup_env.sh
   - bash ./scripts/setup_dep.sh
+  - bash ./scripts/setup_env.sh
   - bash ./scripts/run-tests.sh
 after_success:
   - coveralls -b .. -r .. -i ./src --dump c.report.json

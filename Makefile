@@ -2,16 +2,17 @@ LUAVER?=5.3
 L_EXT?=so
 UNAME=$(shell uname)
 SYS=$(if $(filter Linux%,$(UNAME)),linux,\
-	    $(if $(filter MINGW%,$(UNAME)),mingw,\
-	    $(if $(filter Darwin%,$(UNAME)),macosx,\
-	        undefined\
+	$(if $(filter MINGW%,$(UNAME)),mingw,\
+	$(if $(filter Darwin%,$(UNAME)),macosx,\
+	undefined\
 )))
+PATH+="$(HOME)/.lua:$(HOME)/.luarocks/bin"
 
 ifdef MINGW_PREFIX
 	MINGW=1
 	L_EXT=dll
 else
-	UNAME_S := $(shell uname -s)
+	UNAME_S:=$(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		LINUX=1
 	endif
@@ -20,22 +21,31 @@ else
 	endif
 endif
 
-# Linux
-ifdef LINUX
-PREFIX?=/usr/local
-INCDIR=`pkg-config --cflags lua5.3`
-endif
-
-# OSX - Homebrew
-ifdef OSX
-PREFIX?=/usr/local
-INCDIR=`pkg-config --cflags lua5.3`
-endif
-
-# Windows - Mingw/Msys
-ifdef MINGW
-PREFIX?=$(MINGW_PREFIX)
-INCDIR=`pkg-config --cflags lua5.3`
+INCDIR+=-Iglfw/include
+# CI
+ifdef CI
+	PREFIX?=$(PROJECT_HOME)/build/install/lua-nanovg
+	INCDIR+=-I$(PROJECT_HOME)/build/install/lua/include
+	LDFLAGS?=-L$(PROJECT_HOME)/build/install/lua/lib -llua
+else
+	# Linux
+	ifdef LINUX
+		PREFIX?=/usr/local
+		INCDIR+=$(shell pkg-config --cflags lua$(LUAVER))
+		LDFLAGS?=$(shell pkg-config --libs lua$(LUAVER))
+	endif
+	# Windows - Mingw/Msys
+	ifdef MINGW
+		PREFIX?=$(MINGW_PREFIX)
+		INCDIR+=$(shell pkg-config --cflags lua$(LUAVER))
+		LDFLAGS?=$(shell pkg-config --libs lua$(LUAVER))
+	endif
+	# OSX - Homebrew(pkg-config must exist)
+	ifdef OSX
+		PREFIX?=/usr/local
+		INCDIR+=$(shell pkg-config --cflags lua$(LUAVER))
+		LDFLAGS?=$(shell pkg-config --libs lua$(LUAVER))
+	endif
 endif
 
 # Directory where to install Lua modules
@@ -65,43 +75,41 @@ clean :
 	@cd moonglfw && $(MAKE) clean
 
 moonglfw :
-	@echo "Building moonglfw dependency in $(PREFIX)"
-	@cd moonglfw && INCDIR=`pkg-config --cflags lua5.3` $(MAKE) clean && cd .
-	@cd moonglfw && INCDIR=`pkg-config --cflags lua5.3` $(MAKE) && cd .
+	@echo "Building moonglfw dependency in $(PREFIX) $(INCDIR)"
+	@cd moonglfw && INCDIR="$(INCDIR)" $(MAKE) clean && cd .
+	@cd moonglfw && INCDIR="$(INCDIR)" $(MAKE) && cd .
 	@cp moonglfw/src/moonglfw.$(L_EXT) moonglfw.$(L_EXT)
 
 install :
 	@echo "Installing moonglfw dependency in $(PREFIX)"
-	@cd moonglfw && PREFIX=$(PREFIX) $(MAKE) -f Makefile install && cd .
+	@cd moonglfw && PREFIX="$(PREFIX)" $(MAKE) -f Makefile install && cd .
 	@echo "Installing nvg dependency in $(C_DIR)"
 	@cp -f nvg.$(L_EXT) $(C_DIR)
 
 test :
-	# Test
-	lua$(LUAVER) examples/test.lua
+	@bash ./scripts/run-tests.sh
 
 mingw : OS := MINGW
-mingw : CFLAGS += -DLUAVER=$(LUAVER) -D_GLFW_USE_OPENGL -D_GLFW_WIN32 -D_GLFW_WGL -D_GLFW_BUILD_ALL -Iglfw/include $(shell pkg-config --cflags lua$(LUAVER)) -fPIC
-mingw : LDFLAGS += $(shell pkg-config --libs lua$(LUAVER)) -lm -lopengl32 -lgdi32
+mingw : CFLAGS += -DLUAVER=$(LUAVER) -D_GLFW_USE_OPENGL -D_GLFW_WIN32 -D_GLFW_WGL -D_GLFW_BUILD_ALL -fPIC
+mingw : LDFLAGS += -lm -lopengl32 -lgdi32
 mingw :
 	# NanoVG
-	gcc -c -O3 $(CFLAGS) nanovg/src/nanovg.c
+	gcc -c -O3 $(CFLAGS) $(INCDIR) nanovg/src/nanovg.c
 	ar rcs libnanovg.a *.o
-	gcc -shared -O3 $(CFLAGS) -o nvg.$(L_EXT) lua-nanovg.c libnanovg.a $(LDFLAGS)
+	gcc -shared -O3 $(CFLAGS) $(INCDIR) -o nvg.$(L_EXT) lua-nanovg.c libnanovg.a $(LDFLAGS)
 
 linux : OS := LINUX
-linux : CFLAGS += -DLUAVER=$(LUAVER) -D_GLFW_USE_OPENGL -D_GLFW_X11 -D_GLFW_BUILD_ALL -Iglfw/include $(shell pkg-config --cflags lua$(LUAVER)) -fPIC
-linux : LDFLAGS += $(shell pkg-config --libs lua$(LUAVER))
+linux : CFLAGS += -DLUAVER=$(LUAVER) -D_GLFW_USE_OPENGL -D_GLFW_X11 -D_GLFW_BUILD_ALL -fPIC
 linux :
 	# NanoVG
-	gcc -c -O3 $(CFLAGS) nanovg/src/nanovg.c
+	gcc -c -O3 $(CFLAGS) $(INCDIR) nanovg/src/nanovg.c
 	ar rcs libnanovg.a *.o
-	gcc -shared -O3 $(CFLAGS) -o nvg.$(L_EXT) lua-nanovg.c libnanovg.a $(LDFLAGS)
+	gcc -shared -O3 $(CFLAGS) $(INCDIR) -o nvg.$(L_EXT) lua-nanovg.c libnanovg.a $(LDFLAGS)
 
 macosx : OS := MACOSX
-macosx : CFLAGS += -DLUAVER=$(LUAVER) -D_GLFW_USE_OPENGL -D_GLFW_COCOA -D_GLFW_BUILD_ALL -D_GLFW_NSGL -Iglfw/include
+macosx : CFLAGS += -DLUAVER=$(LUAVER) -D_GLFW_USE_OPENGL -D_GLFW_COCOA -D_GLFW_BUILD_ALL -D_GLFW_NSGL
 macosx :
 	# NanoVG
-	gcc -c -O3 nanovg/src/nanovg.c
+	gcc -c -O3 $(CFLAGS) $(INCDIR) nanovg/src/nanovg.c
 	ar rcs libnanovg.a *.o
 	gcc  -O3 -bundle -undefined dynamic_lookup -o nvg.$(L_EXT) lua-nanovg.c libnanovg.a
