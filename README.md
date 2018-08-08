@@ -1,5 +1,7 @@
 ## lua-nanovg: Lua bindings for NanoVG and NanoSVG
 
+[![Build Status](https://travis-ci.org/starwing/lua-nanovg.svg?branch=master)](https://travis-ci.org/starwing/lua-nanovg)
+
 lua-nanovg is a Lua binding library for [NanoVG](https://github.com/memononen/nanovg/) and [NanoSVG](https://github.com/memononen/nanosvg/).
 
 It runs on OSX, GNU/Linux and on Windows (MSYS2/MinGW) and requires 
