@@ -37,8 +37,8 @@ lua-nanovg$ make install # or 'sudo make install' (Ubuntu)
 
 ```lua
 -- Script: hello.lua
-local nvg = require "nvg"
 local glfw = require("moonglfw")
+local nvg = require("nvg")
 -- Allocate a window and deal with OpenGL
 w = glfw.create_window(640, 480, "Hello world!")
 glfw.make_context_current(w)
