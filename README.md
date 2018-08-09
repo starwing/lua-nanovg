@@ -30,6 +30,7 @@ $ git submodule init
 $ git submodule update
 $ cd lua-nanovg
 lua-nanovg$ make
+lua-nanovg$ make demo
 lua-nanovg$ make install # or 'sudo make install' (Ubuntu)
 ```
 

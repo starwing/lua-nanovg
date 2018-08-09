@@ -26,8 +26,8 @@ INCDIR+=-Iglfw/include
 
 # CI
 PREFIX?=/usr/local
-INCDIR+=$(shell pkg-config --cflags lua5.3)
-LDFLAGS?=$(shell pkg-config --libs lua5.3)
+INCDIR+=$(shell pkg-config --cflags lua$(LUAVER))
+LDFLAGS?=$(shell pkg-config --libs lua$(LUAVER))
 
 # Directory where to install Lua modules
 L_DIR=$(PREFIX)/share/lua/$(LUAVER)
@@ -75,7 +75,10 @@ install : moonglfw $(SYS)
 	@cp -f nvg.$(L_EXT) $(P_DIR)
 
 test :
-	lunit.sh -i lua5.3 $(PROJECT_HOME)/test/test.lua
+	lunit.sh -i lua$(LUAVER) $(PROJECT_HOME)/test/test.lua
+
+demo :
+	lua$(LUAVER) $(PROJECT_HOME)/examples/demo.lua
 
 mingw : OS := MINGW
 mingw : CFLAGS += -DLUAVER=$(LUAVER) -D_GLFW_USE_OPENGL -D_GLFW_WIN32 -D_GLFW_WGL -D_GLFW_BUILD_ALL -fPIC
