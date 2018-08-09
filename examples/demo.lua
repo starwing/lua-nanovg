@@ -3,7 +3,6 @@ local nvg = require "nvg"
 local color = require "nvg.color"
 local pprint = require "pprint"
 
-
 local icons = {
    search        = "\xF0\x9F\x94\x8D",
    circled_cross = "\xE2\x9C\x96",

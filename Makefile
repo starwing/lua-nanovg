@@ -75,9 +75,13 @@ install : moonglfw $(SYS)
 	@cp -f nvg.$(L_EXT) $(P_DIR)
 
 test :
-	lunit.sh -i lua$(LUAVER) $(PROJECT_HOME)/test/test.lua
+	@echo $$(luarocks path) > /tmp/luarocks-config
+	@eval $$(cat /tmp/luarocks-config); \
+	$(HOME)/.luarocks/bin/lunit.sh -i lua$(LUAVER) $(PROJECT_HOME)/test/test.lua
 
 demo :
+	@echo $$(luarocks path) > /tmp/luarocks-config
+	@eval $$(cat /tmp/luarocks-config); \
 	lua$(LUAVER) $(PROJECT_HOME)/examples/demo.lua
 
 mingw : OS := MINGW

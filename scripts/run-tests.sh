@@ -33,6 +33,7 @@ fi
 PATH=$HOME/.luarocks/bin:$HOME/.lua:$PATH
 PATH_SCRIPT="$(luarocks path)"
 eval $PATH_SCRIPT
-PATH=$HOME/.luarocks/bin:$HOME/.lua:$PATH
+export PATH=$HOME/.luarocks/bin:$HOME/.lua:$PATH
+eval $PATH_SCRIPT
 lunit.sh -i /usr/bin/lua${L_LU} $PROJECT_HOME/test/test.lua
 echo "Testing finished"
