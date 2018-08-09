@@ -11,12 +11,17 @@ env:
 branches:
   only:
     - master
+cache:
+  apt: true
 before_install:
+  - sudo apt-get update
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
 script:
   - bash ./scripts/setup_dep.sh
-  - bash ./scripts/setup_env.sh
+  - bash ./scripts/setup_lua.sh
+  - bash ./scripts/setup_luarocks.sh
+  - bash ./scripts/build.sh
   - bash ./scripts/run-tests.sh
 after_success:
   - coveralls -b .. -r .. -i ./src --dump c.report.json
