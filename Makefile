@@ -42,7 +42,7 @@ P_DIR=$(HOME)/.luarocks/lib/lua/$(LUAVER)
 
 default : all
 
-.PHONY: all clean moonglfw install test mingw linux macosx undefined doc
+.PHONY: all clean moonglfw install test demo mingw linux macosx undefined doc
 
 all: clean moonglfw $(SYS) doc
 
