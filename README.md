@@ -1,5 +1,7 @@
 ## lua-nanovg: Lua bindings for NanoVG and NanoSVG
 
+[![Build Status](https://travis-ci.org/starwing/lua-nanovg.svg?branch=master)](https://travis-ci.org/starwing/lua-nanovg)
+
 lua-nanovg is a Lua binding library for [NanoVG](https://github.com/memononen/nanovg/) and [NanoSVG](https://github.com/memononen/nanosvg/).
 
 It runs on OSX, GNU/Linux and on Windows (MSYS2/MinGW) and requires 
@@ -28,6 +30,7 @@ $ git submodule init
 $ git submodule update
 $ cd lua-nanovg
 lua-nanovg$ make
+lua-nanovg$ make demo
 lua-nanovg$ make install # or 'sudo make install' (Ubuntu)
 ```
 
@@ -35,8 +38,8 @@ lua-nanovg$ make install # or 'sudo make install' (Ubuntu)
 
 ```lua
 -- Script: hello.lua
-local nvg = require "nvg"
 local glfw = require("moonglfw")
+local nvg = require("nvg")
 -- Allocate a window and deal with OpenGL
 w = glfw.create_window(640, 480, "Hello world!")
 glfw.make_context_current(w)

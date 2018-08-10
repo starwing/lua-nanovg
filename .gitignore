@@ -14,6 +14,8 @@ old/*
 # Build results
 .travis/lua-5.*/*
 .travis/build/*
+*.env/*
+env/*
 
 [Dd]ebug/
 [Rr]elease/
@@ -21,6 +23,10 @@ x64/
 build/
 [Bb]in/
 [Oo]bj/
+
+moonglfw/.gitignore
+nanovg/.gitignore
+nanosvg/.gitignore
 
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/

@@ -1,8 +1,6 @@
 -- Script: hello.lua
 local glfw = require "moonglfw"
 local nvg = require "nvg"
-local color = require "nvg.color"
-local pprint = require "pprint"
 
 -- Allocate a window and deal with OpenGL
 w = glfw.create_window(640, 480, "Hello world!")
