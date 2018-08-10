@@ -65,10 +65,10 @@ clean :
 moonglfw :
 	@echo "Building moonglfw dependency in $(PREFIX) $(INCDIR)"
 	@cd moonglfw && INCDIR="$(INCDIR)" $(MAKE) clean && cd .
-	@cd moonglfw && INCDIR="$(INCDIR)" $(MAKE) && cd .
+	@cd moonglfw && INCDIR="$(INCDIR)" LIBS="$(LDFLAGS)" $(MAKE) && cd .
 	@cp moonglfw/src/moonglfw.$(L_EXT) moonglfw.$(L_EXT)
 
-install : moonglfw $(SYS)
+install :
 	@echo "Installing moonglfw dependency in $(P_DIR)"
 	@cp -f moonglfw.$(L_EXT) $(P_DIR)
 	@echo "Installing nvg dependency in $(P_DIR)"
