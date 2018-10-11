@@ -92,7 +92,7 @@ mingw :
 
 linux : OS := LINUX
 linux : CFLAGS += -DLUAVER=$(LUAVER) -D_GLFW_USE_OPENGL -D_GLFW_X11 -D_GLFW_BUILD_ALL -Iglfw/include $(shell pkg-config --cflags lua$(LUAVER)) -fPIC
-linux : LDFLAGS += $(shell pkg-config --libs lua$(LUAVER))
+linux : LDFLAGS += $(shell pkg-config --libs lua$(LUAVER) gl)
 linux :
 	# NanoVG
 	gcc -c -O3 $(CFLAGS) nanovg/src/nanovg.c
