@@ -1,4 +1,5 @@
-LUAVER?=5.3
+TARGET_LUAVER=5.3
+LUAVER?=$(shell if pkg-config --silence-errors --libs lua$(TARGET_LUAVER); then echo $(TARGET_LUAVER); else echo $(subst .,,$(TARGET_LUAVER)); fi)
 L_EXT?=so
 UNAME=$(shell uname)
 SYS=$(if $(filter Linux%,$(UNAME)),linux,\
@@ -23,19 +24,19 @@ endif
 # Linux
 ifdef LINUX
 PREFIX?=/usr/local
-INCDIR=`pkg-config --cflags lua5.3`
+INCDIR=`pkg-config --cflags lua$(LUAVER)`
 endif
 
 # OSX - Homebrew
 ifdef OSX
 PREFIX?=/usr/local
-INCDIR=`pkg-config --cflags lua5.3`
+INCDIR=`pkg-config --cflags lua$(LUAVER)`
 endif
 
 # Windows - Mingw/Msys
 ifdef MINGW
 PREFIX?=$(MINGW_PREFIX)
-INCDIR=`pkg-config --cflags lua5.3`
+INCDIR=`pkg-config --cflags lua$(LUAVER)`
 endif
 
 # Directory where to install Lua modules
@@ -66,8 +67,8 @@ clean :
 
 moonglfw :
 	@echo "Building moonglfw dependency in $(PREFIX)"
-	@cd moonglfw && INCDIR=`pkg-config --cflags lua5.3` $(MAKE) clean && cd .
-	@cd moonglfw && INCDIR=`pkg-config --cflags lua5.3` $(MAKE) && cd .
+	@cd moonglfw && INCDIR=`pkg-config --cflags lua$(LUAVER)` $(MAKE) clean && cd .
+	@cd moonglfw && INCDIR=`pkg-config --cflags lua$(LUAVER)` $(MAKE) && cd .
 	@cp moonglfw/src/moonglfw.$(L_EXT) moonglfw.$(L_EXT)
 
 install :
