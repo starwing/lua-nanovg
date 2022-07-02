@@ -9,7 +9,7 @@ description = {
    license = "MIT"
 }
 dependencies = {
-   "lua >= 5.1, < 5.4"
+   "lua >= 5.1, <= 5.4"
 }
 build = {
    type = "builtin",
@@ -18,6 +18,13 @@ build = {
          modules = {
             nvg = {
                libraries = { "opengl32" },
+            }
+         }
+      },
+      linux = {
+         modules = {
+            nvg = {
+               libraries = { "GL" },
             }
          }
       }
