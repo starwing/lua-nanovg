@@ -1,8 +1,8 @@
 package = "nanovg"
-version = "1.0.0-1"
+version = "0.1.2-2"
 source = {
-   url = "https://github.com/starwing/lua-nanovg/archive/1.0.0.tar.gz",
-   dir = "lua-nanovg-1.0.0"
+   url = "https://github.com/starwing/lua-nanovg/archive/0.1.2.tar.gz",
+   dir = "lua-nanovg-0.1.2"
 }
 description = {
    summary = "Lua binding for NanoVG",
@@ -10,7 +10,7 @@ description = {
    license = "MIT"
 }
 dependencies = {
-   "lua >= 5.1, < 5.4"
+   "lua >= 5.1, <= 5.4"
 }
 build = {
    type = "builtin",
