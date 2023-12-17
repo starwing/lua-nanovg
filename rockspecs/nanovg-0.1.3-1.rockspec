@@ -1,8 +1,8 @@
 package = "nanovg"
-version = "0.1.2-2"
+version = "0.1.3-1"
 source = {
-   url = "https://github.com/starwing/lua-nanovg/archive/0.1.2.tar.gz",
-   dir = "lua-nanovg-0.1.2"
+   url = "https://github.com/starwing/lua-nanovg/releases/download/0.1.3/lua-nanovg-0.1.3.zip",
+   dir = "lua-nanovg-0.1.3"
 }
 description = {
    summary = "Lua binding for NanoVG",
